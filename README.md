@@ -4,4 +4,4 @@
   <img src="./docs/assets/hero.png" alt="Hero Banner">
 </p>
 
-["Старт в Dev mode"](./docs/dev.md)
+[Старт в Dev mode](./docs/dev.md)
