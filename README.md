@@ -3,3 +3,5 @@
 <p align="center">
   <img src="./docs/assets/hero.png" alt="Hero Banner">
 </p>
+
+[./docs/dev.md]("Старт в Dev mode")
