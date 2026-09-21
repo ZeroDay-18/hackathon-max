@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: max_postgres-dev
+
+    environment:
+      POSTGRES_DB: max_hackathon
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - max_postgres_dev_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d max_hackathon"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+    restart: unless-stopped
+
+volumes:
+  max_postgres_dev_data:
