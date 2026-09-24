@@ -1,4 +1,5 @@
 <script setup>
+const VITE_BACKEND_URL = import.meta.VITE_BACKEND_URL;
 import { onMounted, ref } from 'vue';
 
 const textr = ref("Загрузка...")
@@ -7,7 +8,7 @@ onMounted(async () => {
   try {
     const initData = window.WebApp.initData || "123"
 
-    const response = await fetch('http://localhost:3000/api/auth/max-miniapp', {
+    const response = await fetch(`${VITE_BACKEND_URL}/api/auth/max-miniapp`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
