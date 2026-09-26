@@ -3,7 +3,9 @@ import express from 'express';
 import helmet from 'helmet'
 import cors from 'cors'
 import rateLimit from 'express-rate-limit'
+
 import db from './src/models/index.js'
+import './src/bot/index.js'
 
 import authRoutes from './src/routes/auth.routes.js'
 

@@ -9,10 +9,11 @@
   "scripts": {
     "prod": "docker compose -f ../docker-compose.yml up -d",
     "db:start": "docker compose -f ../docker-compose.dev.yml up -d",
-    "dev": "npx nodemon ./index.js",
+    "dev": "set NODE_EXTRA_CA_CERTS=./src/bot/cert/MDD.pem && npx nodemon ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@maxhub/max-bot-api": "^0.3.1",
     "cors": "^2.8.6",
     "dotenv": "^18.0.2",
     "express": "^5.2.1",
