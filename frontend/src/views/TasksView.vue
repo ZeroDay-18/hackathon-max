@@ -1,41 +1,42 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 import EmptyState from '@/components/EmptyState.vue'
 import ModeSwitch from '@/components/ModeSwitch.vue'
-import SectionHeader from '@/components/SectionHeader.vue'
-import TaskCard from '@/components/TaskCard.vue'
+import QuestCard from '@/components/QuestCard.vue'
 import TaskSkeleton from '@/components/TaskSkeleton.vue'
-import { useModeStore } from '@/stores/mode.js'
 import { useTasksStore } from '@/stores/tasks.js'
 
 const { t } = useI18n()
-const modeStore = useModeStore()
+const router = useRouter()
 const tasks = useTasksStore()
 
-const gamified = computed(() => modeStore.isGamified)
-const filter = ref('all')
+const tab = ref('active')
 
-const filters = computed(() => [
-  { key: 'all', label: t('tasks.filters.all') },
-  { key: 'active', label: t('tasks.filters.active') },
-  { key: 'done', label: t('tasks.filters.done') },
+const tabs = computed(() => [
+  { key: 'active', label: t('tasks.tabs.active', { count: tasks.activeTasks.length }) },
+  { key: 'done', label: t('tasks.tabs.done', { count: tasks.doneTasks.length }) },
 ])
 
-const visibleSections = computed(() => {
-  if (filter.value === 'active') {
-    return tasks.sections.filter((s) => s.key !== 'done')
-  }
-  if (filter.value === 'done') {
-    return tasks.sections.filter((s) => s.key === 'done')
-  }
-  return tasks.sections
+const visibleTasks = computed(() => {
+  const list = tab.value === 'done' ? tasks.doneTasks : tasks.activeTasks
+  return [...list].sort((a, b) => {
+    if (a.done !== b.done) return Number(a.done) - Number(b.done)
+    if (!a.dueAt) return 1
+    if (!b.dueAt) return -1
+    return new Date(a.dueAt) - new Date(b.dueAt)
+  })
 })
 
 const progressText = computed(() =>
   t('tasks.progress', { done: tasks.doneCount, total: tasks.total }),
 )
+
+function openQuest(id) {
+  router.push(`/tasks/${id}`)
+}
 
 onMounted(() => {
   if (!tasks.tasks.length) tasks.load()
@@ -55,58 +56,48 @@ onMounted(() => {
     <!-- прогресс -->
     <div class="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-surface-sunken">
       <div
-        class="h-full rounded-full bg-accent transition-[width] duration-500"
+        class="h-full rounded-full bg-gradient-to-r from-accent-strong to-accent transition-[width] duration-500"
         :style="{ width: `${tasks.percent}%` }"
       />
     </div>
 
-    <!-- фильтры -->
-    <div class="scroll-x mt-4 -mx-4 flex gap-2 px-4">
+    <!-- вкладки -->
+    <div class="mt-4 grid grid-cols-2 gap-1 rounded-2xl border border-line bg-surface-sunken p-1">
       <button
-        v-for="f in filters"
-        :key="f.key"
+        v-for="tb in tabs"
+        :key="tb.key"
         type="button"
-        class="tap shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors"
+        class="tap rounded-xl py-2 text-sm font-semibold transition-all"
         :class="
-          filter === f.key
-            ? 'border-accent/50 bg-accent-dim text-accent'
-            : 'border-line bg-surface-raised text-ink-muted'
+          tab === tb.key
+            ? 'bg-surface-raised text-accent shadow-sm'
+            : 'text-ink-muted hover:text-ink'
         "
-        @click="filter = f.key"
+        @click="tab = tb.key"
       >
-        {{ f.label }}
+        {{ tb.label }}
       </button>
     </div>
 
-    <!-- состояния -->
-    <div class="mt-4 space-y-6">
+    <!-- список -->
+    <div class="mt-4 space-y-2.5">
       <TaskSkeleton v-if="tasks.loading" />
 
       <EmptyState
-        v-else-if="!visibleSections.length"
+        v-else-if="!visibleTasks.length"
         :title="t('tasks.empty')"
         :hint="t('tasks.emptyHint')"
       />
 
-      <section v-for="section in visibleSections" :key="section.key" class="space-y-2.5">
-        <SectionHeader
-          :title="t(`tasks.sections.${section.key}`)"
-          :count="section.items.length"
-          :action-label="section.key !== 'done' ? t('tasks.markSectionDone') : ''"
-          @action="tasks.completeSection(section.items)"
-        />
-
-        <ul class="space-y-2.5">
-          <li v-for="task in section.items" :key="task.id">
-            <TaskCard
-              :task="task"
-              :pending="tasks.pendingIds.has(task.id)"
-              :gamified="gamified"
-              @toggle="tasks.toggle"
-            />
-          </li>
-        </ul>
-      </section>
+      <ul v-else class="space-y-2.5">
+        <li v-for="task in visibleTasks" :key="task.id">
+          <QuestCard
+            :task="task"
+            @open="openQuest"
+            @toggle="tasks.toggle"
+          />
+        </li>
+      </ul>
     </div>
   </div>
 </template>

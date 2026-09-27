@@ -31,5 +31,7 @@ export const useStatsStore = defineStore('stats', () => {
     return Math.min(100, Math.round((stats.value.xp / stats.value.xpToNext) * 100))
   })
 
-  return { stats, loading, load, level, xpPercent }
+  const user = computed(() => stats.value?.user ?? null)
+
+  return { stats, loading, load, level, xpPercent, user }
 })

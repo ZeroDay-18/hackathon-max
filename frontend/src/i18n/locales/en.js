@@ -4,13 +4,14 @@ export default {
   mode: 'plain',
 
   app: {
-    title: 'Taskbook',
-    tagline: 'Plan. Do. Done.',
+    title: 'StudyQuest',
+    tagline: 'Your study quests in MAX',
   },
 
   nav: {
     home: 'Home',
-    tasks: 'Tasks',
+    tasks: 'Quests',
+    groups: 'Groups',
     profile: 'Profile',
   },
 
@@ -27,8 +28,9 @@ export default {
     todayProgress: 'Today',
     nextDeadline: 'Next deadline',
     noDeadlines: 'No deadlines',
-    goToTasks: 'All tasks',
-    mascotHint: 'Summaries and deadlines in one place',
+    goToTasks: 'All quests',
+    mascotHint: 'Your mascot grows as you complete quests',
+    deadlinePassed: 'Time is up',
   },
 
   mascot: {
@@ -50,10 +52,10 @@ export default {
   },
 
   tasks: {
-    title: 'Tasks',
+    title: 'Quests',
     source: 'from MAX',
-    empty: 'No tasks yet',
-    emptyHint: 'Message the bot in MAX and it will turn your text into tasks',
+    empty: 'No quests yet',
+    emptyHint: 'Message the bot in MAX and it will turn your text into quests',
     sections: {
       overdue: 'Overdue',
       today: 'Today',
@@ -63,6 +65,10 @@ export default {
     },
     markSectionDone: 'Complete all',
     progress: '{done} of {total}',
+    tabs: {
+      active: 'Active ({count})',
+      done: 'Completed ({count})',
+    },
     relative: {
       overdueBy: '{time} overdue',
       inHours: 'in {time} h',
@@ -76,6 +82,30 @@ export default {
     },
   },
 
+  quest: {
+    description: 'Description',
+    deadline: 'Deadline',
+    noDeadline: 'No deadline',
+    status: {
+      title: 'Status',
+      not_started: 'Not started',
+      in_progress: 'In progress',
+      done: 'Completed',
+    },
+    start: 'Start quest',
+    continue: 'Continue',
+    completed: 'Completed',
+    complete: {
+      title: 'Quest completed!',
+    },
+    reward: 'Your reward',
+    notFound: 'Quest not found',
+  },
+
+  time: {
+    days: 'd',
+  },
+
   profile: {
     title: 'Profile',
     character: 'Character',
@@ -84,11 +114,19 @@ export default {
     comingSoon: 'Soon',
   },
 
+  groups: {
+    title: 'Groups',
+    empty: 'No groups yet',
+    comingSoon: 'Section in development',
+  },
+
   common: {
     loading: 'Loading…',
     retry: 'Retry',
     error: 'Something went wrong',
     offline: 'No connection to the server',
     cancel: 'Cancel',
+    back: 'Back',
+    settings: 'Settings',
   },
 }

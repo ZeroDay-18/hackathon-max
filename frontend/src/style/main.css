@@ -1,12 +1,36 @@
 @import 'tailwindcss';
 
 /* ============================================================
-   ДИЗЕЙН-ТОКЕНЫ
+   ДИЗАЙН-ТОКЕНЫ — StudyQuest
+   Светлая тема — основная. Тёмная — опционально через data-theme='dark'.
    Меняешь цвет — меняется весь интерфейс.
-   Значения в @theme попадают в классы Tailwind:
-   var(--color-surface) → bg-surface, text-ink, border-line …
    ============================================================ */
 @theme {
+  --color-ink: #1e2235;
+  --color-ink-muted: #6b7186;
+  --color-ink-faint: #9aa0b4;
+
+  --color-surface: #f4f7fb;
+  --color-surface-raised: #ffffff;
+  --color-surface-sunken: #e8edf5;
+  --color-line: rgb(30 34 53 / 0.08);
+  --color-line-strong: rgb(30 34 53 / 0.16);
+
+  --color-accent: #6c5ce7;
+  --color-accent-strong: #5a4bd1;
+  --color-accent-dim: rgb(108 92 231 / 0.12);
+
+  --color-warn: #f59e0b;
+  --color-danger: #ef4444;
+
+  --radius-card: 22px;
+
+  --font-sans:
+    system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+}
+
+/* Тёмная тема — опционально */
+html[data-theme='dark'] {
   --color-ink: #e8f0f2;
   --color-ink-muted: #8fa3ab;
   --color-ink-faint: #5d6f77;
@@ -17,44 +41,19 @@
   --color-line: rgb(255 255 255 / 0.08);
   --color-line-strong: rgb(255 255 255 / 0.16);
 
-  --color-accent: #34d399;
-  --color-accent-strong: #10b981;
-  --color-accent-dim: rgb(52 211 153 / 0.14);
-
-  --color-warn: #fbbf24;
-  --color-danger: #f87171;
-
-  --radius-card: 22px;
-
-  --font-sans:
-    system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-}
-
-/* Светлая тема — переключается атрибутом на <html> */
-html[data-theme='light'] {
-  --color-ink: #101a1f;
-  --color-ink-muted: #5b6c74;
-  --color-ink-faint: #8b9aa1;
-
-  --color-surface: #f4f7f8;
-  --color-surface-raised: #ffffff;
-  --color-surface-sunken: #e8edef;
-  --color-line: rgb(16 26 31 / 0.1);
-  --color-line-strong: rgb(16 26 31 / 0.2);
-
-  --color-accent: #0d9f6e;
-  --color-accent-strong: #047857;
-  --color-accent-dim: rgb(13 159 110 / 0.12);
+  --color-accent: #6c5ce7;
+  --color-accent-strong: #5a4bd1;
+  --color-accent-dim: rgb(108 92 231 / 0.14);
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
 }
 
-html[data-theme='light'] {
-  color-scheme: light;
+html[data-theme='dark'] {
+  color-scheme: dark;
 }
 
 body {

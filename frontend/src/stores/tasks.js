@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
-import { completeMany, fetchTasks, setTaskDone } from '@/api/tasks.js'
+import { completeMany, fetchTasks, setTaskDone, setTaskStatus } from '@/api/tasks.js'
 
 const DAY = 24 * 60 * 60 * 1000
 
@@ -97,6 +97,10 @@ export const useTasksStore = defineStore('tasks', () => {
   /** 5 стадий маскота: 0-19% → 0, …, 80-100% → 4 */
   const mascotStage = computed(() => Math.min(4, Math.floor(percent.value / 20)))
 
+  function findTask(id) {
+    return tasks.value.find((t) => t.id === id) ?? null
+  }
+
   async function load() {
     loading.value = true
     error.value = null
@@ -113,7 +117,11 @@ export const useTasksStore = defineStore('tasks', () => {
     const next = !task.done
     pendingIds.value = new Set(pendingIds.value).add(task.id)
     const snapshot = tasks.value.map((t) => ({ ...t }))
-    tasks.value = tasks.value.map((t) => (t.id === task.id ? { ...t, done: next } : t))
+    tasks.value = tasks.value.map((t) =>
+      t.id === task.id
+        ? { ...t, done: next, status: next ? 'done' : 'not_started' }
+        : t,
+    )
 
     try {
       await setTaskDone(task.id, next)
@@ -127,10 +135,38 @@ export const useTasksStore = defineStore('tasks', () => {
     }
   }
 
+  async function startQuest(id) {
+    const snapshot = tasks.value.map((t) => ({ ...t }))
+    tasks.value = tasks.value.map((t) =>
+      t.id === id ? { ...t, status: 'in_progress' } : t,
+    )
+    try {
+      await setTaskStatus(id, 'in_progress')
+    } catch (e) {
+      tasks.value = snapshot
+      error.value = e.userMessage ?? 'error'
+    }
+  }
+
+  async function completeQuest(id) {
+    const snapshot = tasks.value.map((t) => ({ ...t }))
+    tasks.value = tasks.value.map((t) =>
+      t.id === id ? { ...t, done: true, status: 'done' } : t,
+    )
+    try {
+      await setTaskStatus(id, 'done')
+    } catch (e) {
+      tasks.value = snapshot
+      error.value = e.userMessage ?? 'error'
+    }
+  }
+
   async function completeSection(items) {
     const ids = items.map((t) => t.id)
     const snapshot = tasks.value.map((t) => ({ ...t }))
-    tasks.value = tasks.value.map((t) => (ids.includes(t.id) ? { ...t, done: true } : t))
+    tasks.value = tasks.value.map((t) =>
+      ids.includes(t.id) ? { ...t, done: true, status: 'done' } : t,
+    )
 
     try {
       await completeMany(ids)
@@ -154,8 +190,11 @@ export const useTasksStore = defineStore('tasks', () => {
     todayStats,
     nextDeadline,
     mascotStage,
+    findTask,
     load,
     toggle,
+    startQuest,
+    completeQuest,
     completeSection,
   }
 })

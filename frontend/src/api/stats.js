@@ -1,17 +1,18 @@
 import { ENDPOINTS, USE_MOCKS } from './config.js'
 import http from './client.js'
-import { MOCK_STATS } from './mockData.js'
+import { MOCK_STATS, MOCK_USER } from './mockData.js'
 
 /**
  * Контракт: { success: boolean, data: {
  *   doneTotal: number, streak: number, onTime: number,
  *   perWeek: number, guildProgress: number, level: number,
- *   xp: number, xpToNext: number
- * }}
+ *   xp: number, xpToNext: number,
+ *   user: { name, level, xp, xpToNext, characteristics, group }
+ * }}}
  * В обычном режиме (en) поля level/xp/streak фронт не рисует.
  */
 export async function fetchStats() {
-  if (USE_MOCKS) return { ...MOCK_STATS }
+  if (USE_MOCKS) return { ...MOCK_STATS, user: { ...MOCK_USER } }
 
   const payload = await http.get(ENDPOINTS.stats)
   const data = payload?.data ?? payload ?? {}
@@ -24,5 +25,6 @@ export async function fetchStats() {
     level: data.level ?? 1,
     xp: data.xp ?? 0,
     xpToNext: data.xpToNext ?? 100,
+    user: data.user ?? null,
   }
 }

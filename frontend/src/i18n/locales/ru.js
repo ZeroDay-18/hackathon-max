@@ -4,13 +4,14 @@ export default {
   mode: 'gamified',
 
   app: {
-    title: 'Задачник',
-    tagline: 'Делай — растёшь',
+    title: 'StudyQuest',
+    tagline: 'Твои учебные квесты в MAX',
   },
 
   nav: {
     home: 'Главная',
     tasks: 'Квесты',
+    groups: 'Группы',
     profile: 'Профиль',
   },
 
@@ -29,6 +30,7 @@ export default {
     noDeadlines: 'Дедлайнов нет',
     goToTasks: 'Все квесты',
     mascotHint: 'Маскот растёт, пока ты закрываешь квесты',
+    deadlinePassed: 'Время вышло',
   },
 
   mascot: {
@@ -63,6 +65,10 @@ export default {
     },
     markSectionDone: 'Закрыть все',
     progress: '{done} из {total}',
+    tabs: {
+      active: 'Активные ({count})',
+      done: 'Выполненные ({count})',
+    },
     relative: {
       overdueBy: 'просрочено {time}',
       inHours: 'через {time} ч',
@@ -76,6 +82,30 @@ export default {
     },
   },
 
+  quest: {
+    description: 'Описание',
+    deadline: 'Дедлайн',
+    noDeadline: 'Без срока',
+    status: {
+      title: 'Статус',
+      not_started: 'Не начато',
+      in_progress: 'В процессе',
+      done: 'Выполнено',
+    },
+    start: 'Начать выполнение',
+    continue: 'Продолжить',
+    completed: 'Выполнено',
+    complete: {
+      title: 'Квест выполнен!',
+    },
+    reward: 'Твоя награда',
+    notFound: 'Квест не найден',
+  },
+
+  time: {
+    days: 'дн',
+  },
+
   profile: {
     title: 'Профиль',
     character: 'Персонаж',
@@ -84,11 +114,19 @@ export default {
     comingSoon: 'Скоро',
   },
 
+  groups: {
+    title: 'Группы',
+    empty: 'Пока нет групп',
+    comingSoon: 'Раздел в разработке',
+  },
+
   common: {
     loading: 'Загружаю…',
     retry: 'Повторить',
     error: 'Что-то пошло не так',
     offline: 'Нет связи с сервером',
     cancel: 'Отмена',
+    back: 'Назад',
+    settings: 'Настройки',
   },
 }

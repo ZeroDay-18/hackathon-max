@@ -7,8 +7,14 @@ import { MOCK_TASKS } from './mockData.js'
  * {
  *   id: string,
  *   title: string,
+ *   subject: string,
+ *   description: string,
  *   done: boolean,
+ *   status: 'not_started' | 'in_progress' | 'done',
  *   dueAt: string | null,   // ISO-8601
+ *   xp: number,
+ *   icon: string,
+ *   reward: { name: string, rarity: string },
  *   tags: string[],
  *   source: 'max' | 'manual'
  * }
@@ -19,8 +25,14 @@ function normalize(raw) {
   return {
     id: String(raw.id ?? raw._id ?? ''),
     title: raw.title ?? raw.text ?? '',
+    subject: raw.subject ?? '',
+    description: raw.description ?? '',
     done: Boolean(raw.done ?? raw.completed ?? raw.isDone),
+    status: raw.status ?? (raw.done ? 'done' : 'not_started'),
     dueAt: raw.dueAt ?? raw.due ?? raw.deadline ?? null,
+    xp: raw.xp ?? 0,
+    icon: raw.icon ?? 'lab',
+    reward: raw.reward ?? null,
     tags: Array.isArray(raw.tags) ? raw.tags : [],
     source: raw.source ?? 'manual',
   }
@@ -45,20 +57,48 @@ export async function fetchTasks() {
   return unwrap(await http.get(ENDPOINTS.tasks))
 }
 
+export async function fetchTask(id) {
+  if (USE_MOCKS) {
+    const task = getMockStore().find((t) => t.id === id)
+    return task ? { ...task } : null
+  }
+  const payload = await http.get(`${ENDPOINTS.tasks}/${id}`)
+  return normalize(payload?.data ?? payload)
+}
+
 export async function setTaskDone(id, done) {
   if (USE_MOCKS) {
     const task = getMockStore().find((t) => t.id === id)
-    if (task) task.done = done
+    if (task) {
+      task.done = done
+      task.status = done ? 'done' : 'not_started'
+    }
     return { ...task }
   }
   const payload = await http.patch(`${ENDPOINTS.tasks}/${id}`, { done })
   return normalize(payload?.data ?? payload ?? { id, done })
 }
 
+export async function setTaskStatus(id, status) {
+  if (USE_MOCKS) {
+    const task = getMockStore().find((t) => t.id === id)
+    if (task) {
+      task.status = status
+      task.done = status === 'done'
+    }
+    return { ...task }
+  }
+  const payload = await http.patch(`${ENDPOINTS.tasks}/${id}`, { status })
+  return normalize(payload?.data ?? payload ?? { id, status })
+}
+
 export async function completeMany(ids) {
   if (USE_MOCKS) {
     getMockStore().forEach((t) => {
-      if (ids.includes(t.id)) t.done = true
+      if (ids.includes(t.id)) {
+        t.done = true
+        t.status = 'done'
+      }
     })
     return []
   }
