@@ -41,7 +41,7 @@ try {
   await db.sequelize.authenticate()
   console.log('БД Подключена')
 
-  await db.sequelize.sync()
+  await db.sequelize.sync({ alter: true })
 
   // App boot
   app.listen(port, () => {

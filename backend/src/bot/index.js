@@ -1,43 +1,56 @@
-import { Bot, Keyboard } from '@maxhub/max-bot-api';
+import 'dotenv/config';
+import { Bot, ScenarioEngine, session } from '@maxhub/max-bot-api';
+import { onboardingScenario } from './scenarios/onboardingScenario.js';
 
 const bot = new Bot(process.env.MAX_BOT_TOKEN);
 
-// Установка подсказок с доступными командами
+const scenarioEngine = new ScenarioEngine();
+scenarioEngine.register(onboardingScenario);
+
+bot.use(session());
+bot.use(scenarioEngine.middleware());
+
+bot.use(async (ctx, next) => {
+  try {
+    const updateType = ctx.update?.update_type;
+
+    // 1. Пропускаем технические ивенты (typing и т.д.), 
+    // но ОБЯЗАТЕЛЬНО пускаем bot_started (кнопка Начать)
+    const allowedEvents = ['message_created', 'callback_query', 'bot_started'];
+    if (!allowedEvents.includes(updateType)) {
+      return await next();
+    }
+
+    // 2. Если сценарий уже активен — отдаём обработку в scenarioEngine
+    if (ctx.scenario?.current) {
+      return await next();
+    }
+
+    // 3. Если пользователь не зарегистрирован — стартуем онбординг
+    if (!ctx.session?.isRegistered) {
+      const startOnboarding = scenarioEngine.start(onboardingScenario, () => ({}));
+      await startOnboarding(ctx, next);
+      
+      // Прерываем дальнейшее выполнение, чтобы бот не реагировал на обычные команды
+      return; 
+    }
+
+    return await next();
+  } catch (error) {
+    console.error('Ошибка в корневом миддлваре:', error);
+    return await next();
+  }
+});
+
 bot.api.setMyCommands([
-  { 
-    name: 'ping',
-    description: 'Сыграть в пинг-понг'
-  },
+  { name: 'ping', description: 'Сыграть в пинг-понг' },
 ]);
 
-// Обработчик события запуска бота
-bot.on('bot_started', (ctx) => ctx.reply('Привет! Отправь мне команду /ping, чтобы сыграть в пинг-понг'));
-
-// Обработчик команды '/ping'
-bot.command('ping', (ctx) => ctx.reply('pong'));
-
-// Обработчик для сообщения с текстом 'hello'
-bot.hears('hello', (ctx) => ctx.reply('world'));
-
-bot.command('policy', (ctx) => {
-    const keyboard = Keyboard.inlineKeyboard([
-        [Keyboard.button.callback('Подтвердить ✅', 'accept-terms')],
-    ]);
-
-
-    ctx.reply("**Добро пожаловать!**\n\n" +
-        "Перед началом использования бота необходимо принять [Условия использования](https://hm.zerodayteam.space/terms) и [Политику конфиденциальности](https://hm.zerodayteam.space/privacy).\n\n" +
-        "Нажимая _«Подтвердить»_, вы соглашаетесь с указанными документами и подтверждаете, что ознакомились с ними.",
-        { format: "markdown", attachments: [keyboard] })
-})
-
-// Обработчик для всех остальных входящих сообщений
-bot.on('message_created', (ctx) => ctx.reply(ctx.message.body.text));
+bot.command('ping', async (ctx) => {
+  const chatId = ctx.update?.message?.chat?.chat_id || ctx.update?.message?.sender?.user_id;
+  if (chatId) {
+     await ctx.api.sendMessageToChat(String(chatId), 'pong');
+  }
+});
 
 bot.start();
-
-// 1. Цикл пока пользователь не согласится с условиями
-// 2. Ввод нормера группы и мб ФИО
-// 3. Уже есть доступ в мини-приложение
-
-
