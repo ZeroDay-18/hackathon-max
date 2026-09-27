@@ -10,7 +10,7 @@ onMounted(async () => {
     const initData = window.WebApp?.initData || "123";
     initDataLog.value = initData;
 
-    const response = await fetch(`${VITE_BACKEND_URL}/auth/max-miniapp`, {
+    const response = await fetch(`${VITE_BACKEND_URL}/api/auth/max-miniapp`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
