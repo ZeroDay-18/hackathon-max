@@ -12,4 +12,4 @@ ENV NODE_ENV=production
 
 EXPOSE 3000
 
-CMD ["NODE_EXTRA_CA_CERTS=./src/bot/cert/MDD.pem", "node", "index.js"]
+CMD NODE_EXTRA_CA_CERTS=./src/bot/cert/MDD.pem node index.js
