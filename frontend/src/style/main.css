@@ -1,1 +1,121 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+/* ============================================================
+   ДИЗЕЙН-ТОКЕНЫ
+   Меняешь цвет — меняется весь интерфейс.
+   Значения в @theme попадают в классы Tailwind:
+   var(--color-surface) → bg-surface, text-ink, border-line …
+   ============================================================ */
+@theme {
+  --color-ink: #e8f0f2;
+  --color-ink-muted: #8fa3ab;
+  --color-ink-faint: #5d6f77;
+
+  --color-surface: #0a0f13;
+  --color-surface-raised: #121a20;
+  --color-surface-sunken: #060a0d;
+  --color-line: rgb(255 255 255 / 0.08);
+  --color-line-strong: rgb(255 255 255 / 0.16);
+
+  --color-accent: #34d399;
+  --color-accent-strong: #10b981;
+  --color-accent-dim: rgb(52 211 153 / 0.14);
+
+  --color-warn: #fbbf24;
+  --color-danger: #f87171;
+
+  --radius-card: 22px;
+
+  --font-sans:
+    system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+}
+
+/* Светлая тема — переключается атрибутом на <html> */
+html[data-theme='light'] {
+  --color-ink: #101a1f;
+  --color-ink-muted: #5b6c74;
+  --color-ink-faint: #8b9aa1;
+
+  --color-surface: #f4f7f8;
+  --color-surface-raised: #ffffff;
+  --color-surface-sunken: #e8edef;
+  --color-line: rgb(16 26 31 / 0.1);
+  --color-line-strong: rgb(16 26 31 / 0.2);
+
+  --color-accent: #0d9f6e;
+  --color-accent-strong: #047857;
+  --color-accent-dim: rgb(13 159 110 / 0.12);
+}
+
+html {
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html[data-theme='light'] {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  overscroll-behavior-y: none;
+}
+
+#app {
+  min-height: 100dvh;
+}
+
+/* Мягкое свечение сверху — общий «воздух» интерфейса */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(120% 60% at 50% -10%, var(--color-accent-dim), transparent 70%);
+}
+
+/* Скроллбар, чтобы не вылезал на мобильных */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.scroll-x {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tabbar-space {
+  padding-bottom: calc(88px + max(12px, env(safe-area-inset-bottom)));
+}
+
+.safe-top {
+  padding-top: max(12px, env(safe-area-inset-top));
+}
+
+.tap {
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.tap:active {
+  transform: scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

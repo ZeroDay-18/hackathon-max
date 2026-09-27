@@ -5,18 +5,18 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'homework',
-      component: () => import('@/views/HomeworkView.vue'),
+      name: 'home',
+      component: () => import('@/views/HomeView.vue'),
     },
     {
-      path: '/schedule',
-      name: 'schedule',
-      component: () => import('@/views/HomeworkView.vue'),
+      path: '/tasks',
+      name: 'tasks',
+      component: () => import('@/views/TasksView.vue'),
     },
     {
       path: '/profile',
       name: 'profile',
-      component: () => import('@/views/HomeworkView.vue'),
+      component: () => import('@/views/ProfileView.vue'),
     },
   ],
 })
