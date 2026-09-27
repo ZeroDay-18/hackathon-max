@@ -11,7 +11,6 @@ export default {
   nav: {
     home: 'Home',
     tasks: 'Quests',
-    groups: 'Groups',
     profile: 'Profile',
   },
 
@@ -82,26 +81,6 @@ export default {
     },
   },
 
-  quest: {
-    description: 'Description',
-    deadline: 'Deadline',
-    noDeadline: 'No deadline',
-    status: {
-      title: 'Status',
-      not_started: 'Not started',
-      in_progress: 'In progress',
-      done: 'Completed',
-    },
-    start: 'Start quest',
-    continue: 'Continue',
-    completed: 'Completed',
-    complete: {
-      title: 'Quest completed!',
-    },
-    reward: 'Your reward',
-    notFound: 'Quest not found',
-  },
-
   time: {
     days: 'd',
   },
@@ -112,12 +91,10 @@ export default {
     characterHint: 'Character slot — your artwork goes here',
     stats: 'Statistics',
     comingSoon: 'Soon',
-  },
-
-  groups: {
-    title: 'Groups',
-    empty: 'No groups yet',
-    comingSoon: 'Section in development',
+    slotCharacter: 'Skin',
+    slotBackground: 'Background',
+    slotHat: 'Hat',
+    slotCurrency: 'Currency',
   },
 
   common: {

@@ -57,15 +57,6 @@ export async function fetchTasks() {
   return unwrap(await http.get(ENDPOINTS.tasks))
 }
 
-export async function fetchTask(id) {
-  if (USE_MOCKS) {
-    const task = getMockStore().find((t) => t.id === id)
-    return task ? { ...task } : null
-  }
-  const payload = await http.get(`${ENDPOINTS.tasks}/${id}`)
-  return normalize(payload?.data ?? payload)
-}
-
 export async function setTaskDone(id, done) {
   if (USE_MOCKS) {
     const task = getMockStore().find((t) => t.id === id)
@@ -77,19 +68,6 @@ export async function setTaskDone(id, done) {
   }
   const payload = await http.patch(`${ENDPOINTS.tasks}/${id}`, { done })
   return normalize(payload?.data ?? payload ?? { id, done })
-}
-
-export async function setTaskStatus(id, status) {
-  if (USE_MOCKS) {
-    const task = getMockStore().find((t) => t.id === id)
-    if (task) {
-      task.status = status
-      task.done = status === 'done'
-    }
-    return { ...task }
-  }
-  const payload = await http.patch(`${ENDPOINTS.tasks}/${id}`, { status })
-  return normalize(payload?.data ?? payload ?? { id, status })
 }
 
 export async function completeMany(ids) {

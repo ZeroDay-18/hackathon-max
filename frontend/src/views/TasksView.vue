@@ -1,7 +1,6 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 
 import EmptyState from '@/components/EmptyState.vue'
 import ModeSwitch from '@/components/ModeSwitch.vue'
@@ -10,7 +9,6 @@ import TaskSkeleton from '@/components/TaskSkeleton.vue'
 import { useTasksStore } from '@/stores/tasks.js'
 
 const { t } = useI18n()
-const router = useRouter()
 const tasks = useTasksStore()
 
 const tab = ref('active')
@@ -33,10 +31,6 @@ const visibleTasks = computed(() => {
 const progressText = computed(() =>
   t('tasks.progress', { done: tasks.doneCount, total: tasks.total }),
 )
-
-function openQuest(id) {
-  router.push(`/tasks/${id}`)
-}
 
 onMounted(() => {
   if (!tasks.tasks.length) tasks.load()
@@ -93,7 +87,6 @@ onMounted(() => {
         <li v-for="task in visibleTasks" :key="task.id">
           <QuestCard
             :task="task"
-            @open="openQuest"
             @toggle="tasks.toggle"
           />
         </li>

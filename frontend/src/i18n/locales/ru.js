@@ -11,7 +11,6 @@ export default {
   nav: {
     home: 'Главная',
     tasks: 'Квесты',
-    groups: 'Группы',
     profile: 'Профиль',
   },
 
@@ -82,26 +81,6 @@ export default {
     },
   },
 
-  quest: {
-    description: 'Описание',
-    deadline: 'Дедлайн',
-    noDeadline: 'Без срока',
-    status: {
-      title: 'Статус',
-      not_started: 'Не начато',
-      in_progress: 'В процессе',
-      done: 'Выполнено',
-    },
-    start: 'Начать выполнение',
-    continue: 'Продолжить',
-    completed: 'Выполнено',
-    complete: {
-      title: 'Квест выполнен!',
-    },
-    reward: 'Твоя награда',
-    notFound: 'Квест не найден',
-  },
-
   time: {
     days: 'дн',
   },
@@ -112,12 +91,10 @@ export default {
     characterHint: 'Слот под маскота — сюда встанет твоя картинка',
     stats: 'Статистика',
     comingSoon: 'Скоро',
-  },
-
-  groups: {
-    title: 'Группы',
-    empty: 'Пока нет групп',
-    comingSoon: 'Раздел в разработке',
+    slotCharacter: 'Скин',
+    slotBackground: 'Фон',
+    slotHat: 'Шапка',
+    slotCurrency: 'Валюта',
   },
 
   common: {

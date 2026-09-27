@@ -14,31 +14,40 @@ const tasks = useTasksStore()
 const stats = useStatsStore()
 
 const gamified = computed(() => modeStore.isGamified)
+
+const slots = [
+  { icon: '👕', label: t('profile.slotCharacter') },
+  { icon: '🖼️', label: t('profile.slotBackground') },
+  { icon: '🎩', label: t('profile.slotHat') },
+  { icon: '💎', label: t('profile.slotCurrency') },
+]
 </script>
 
 <template>
   <div class="tabbar-space safe-top relative z-10 mx-auto w-full max-w-md px-4">
-    <header>
-      <h1 class="text-lg leading-tight font-bold tracking-tight">{{ t('profile.title') }}</h1>
-      <p class="text-xs text-ink-faint">{{ t('app.tagline') }}</p>
-    </header>
-
-    <!-- слот под персонажа: сюда встанет картинка -->
+    <!-- задник с маскотом -->
     <section
-      class="mt-5 flex flex-col items-center rounded-[28px] border border-dashed border-line-strong bg-surface-raised px-4 pt-6 pb-6"
+      class="relative overflow-hidden rounded-[28px] bg-gradient-to-b from-accent/25 via-accent/5 to-transparent px-4 pt-8 pb-6"
     >
-      <MascotStage :stage="tasks.mascotStage" size="160px" />
+      <div class="pointer-events-none absolute -top-10 -right-10 size-40 rounded-full bg-accent/10 blur-3xl" />
+      <div class="pointer-events-none absolute -bottom-10 -left-10 size-40 rounded-full bg-accent/10 blur-3xl" />
 
-      <p class="mt-4 text-sm font-semibold">{{ t('profile.character') }}</p>
-      <p class="mt-1 text-center text-xs text-ink-faint">{{ t('profile.characterHint') }}</p>
+      <div class="relative flex flex-col items-center">
+        <MascotStage :stage="tasks.mascotStage" size="180px" />
+        <p class="mt-4 text-lg font-bold">{{ t('profile.character') }}</p>
+        <p class="text-xs text-ink-muted">{{ t('mascot.level') }} {{ stats.level }}</p>
+      </div>
 
-      <!-- слоты кастомизации: заменяем на реальные ассеты -->
-      <div class="mt-5 grid w-full grid-cols-4 gap-2">
+      <!-- слоты кастомизации -->
+      <div class="relative mt-6 grid grid-cols-4 gap-2">
         <div
-          v-for="slot in 4"
-          :key="slot"
-          class="aspect-square rounded-xl border border-dashed border-line bg-surface-sunken"
-        />
+          v-for="slot in slots"
+          :key="slot.label"
+          class="flex flex-col items-center gap-1.5 rounded-2xl border border-line bg-white/80 p-3 text-center backdrop-blur"
+        >
+          <span class="text-2xl">{{ slot.icon }}</span>
+          <span class="text-[10px] font-medium text-ink-muted">{{ slot.label }}</span>
+        </div>
       </div>
     </section>
 
