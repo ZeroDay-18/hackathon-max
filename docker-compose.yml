@@ -28,6 +28,7 @@ services:
       DB_CONNECT_URL: ${DB_CONNECT_URL}
       FRONTEND_URL: ${FRONTEND_URL}
       MAX_BOT_TOKEN: ${MAX_BOT_TOKEN}
+      JWT_SECRET: ${JWT_SECRET}
 
     ports:
       - "127.0.0.1:3000:3000"
