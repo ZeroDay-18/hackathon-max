@@ -38,6 +38,11 @@ const router = createRouter({
       meta: { hideTabBar: true },
     },
     {
+      path: '/guild',
+      name: 'guild',
+      component: () => import('@/views/GuildView.vue'),
+    },
+    {
       path: '/profile',
       name: 'profile',
       component: () => import('@/views/ProfileView.vue'),

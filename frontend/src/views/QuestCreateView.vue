@@ -25,26 +25,18 @@ const visibleTypes = computed(() => scope.value === 'personal'
 
 function setScope(nextScope) {
   scope.value = nextScope;
-
-  if (nextScope === 'personal' && type.value === 'poll') {
-    type.value = 'personal';
-  }
-
-  if (nextScope === 'group' && type.value === 'personal') {
-    type.value = 'homework';
-  }
+  if (nextScope === 'personal' && type.value === 'poll') type.value = 'personal';
+  if (nextScope === 'group' && type.value === 'personal') type.value = 'homework';
 }
 
 async function submit() {
   formError.value = '';
-
   if (!title.value.trim()) {
     formError.value = t('createQuest.required');
     return;
   }
 
   isSubmitting.value = true;
-
   try {
     const quest = await questStore.createQuest({
       title: title.value,
@@ -53,7 +45,6 @@ async function submit() {
       scope: scope.value,
       deadline: deadline.value ? new Date(deadline.value).toISOString() : null,
     });
-
     router.replace({ name: 'quest-detail', params: { id: quest.id } });
   } catch (error) {
     formError.value = error.message;
@@ -64,77 +55,56 @@ async function submit() {
 </script>
 
 <template>
-  <main class="mx-auto min-h-dvh max-w-md bg-[#070913] px-4 pb-8 pt-[max(1rem,env(safe-area-inset-top))] text-slate-100">
+  <main class="quest-page quest-page--plain">
     <header class="flex items-center gap-3">
-      <button
-        type="button"
-        class="grid h-10 w-10 place-items-center rounded-2xl bg-white/5 text-slate-300 hover:bg-white/10"
-        :aria-label="t('common.back')"
-        @click="router.back()"
-      >
-        <span class="material-symbols-outlined">arrow_back</span>
+      <button type="button" class="grid h-9 w-9 place-items-center rounded-lg bg-[#e5e8f2] text-[#253451]" :aria-label="t('common.back')" @click="router.back()">
+        <span class="material-symbols-outlined text-xl" aria-hidden="true">arrow_back</span>
       </button>
-      <h1 class="text-xl font-bold text-white">{{ t('createQuest.title') }}</h1>
+      <h1 class="text-[18px] font-extrabold text-[#1b2847]">{{ t('createQuest.title') }}</h1>
     </header>
 
-    <form class="mt-7 space-y-5" @submit.prevent="submit">
+    <form class="paper-card mt-5 space-y-5 p-4" @submit.prevent="submit">
+      <div class="flex items-center gap-3 border-b border-[#e7eaf3] pb-4">
+        <span class="material-symbols-outlined grid h-11 w-11 place-items-center rounded-xl bg-[#eee8ff] text-[#6749ce]" aria-hidden="true">auto_stories</span>
+        <p class="text-sm font-bold text-[#1b2847]">{{ t('createQuest.title') }}</p>
+      </div>
       <label class="block">
-        <span class="mb-2 block text-sm font-medium text-slate-200">{{ t('createQuest.titleLabel') }}</span>
-        <input
-          v-model="title"
-          type="text"
-          maxlength="255"
-          class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-violet-400"
-          :placeholder="t('createQuest.titlePlaceholder')"
-        >
+        <span class="mb-2 block text-[12px] font-bold text-[#34405b]">{{ t('createQuest.titleLabel') }}</span>
+        <input v-model="title" type="text" maxlength="255" class="quest-field text-sm" :placeholder="t('createQuest.titlePlaceholder')">
       </label>
-
-      <label class="block">
-        <span class="mb-2 block text-sm font-medium text-slate-200">{{ t('createQuest.descriptionLabel') }}</span>
-        <textarea
-          v-model="description"
-          rows="4"
-          class="w-full resize-none rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-violet-400"
-          :placeholder="t('createQuest.descriptionPlaceholder')"
-        />
-      </label>
-
       <fieldset>
-        <legend class="mb-2 text-sm font-medium text-slate-200">{{ t('createQuest.scopeLabel') }}</legend>
+        <legend class="mb-2 text-[12px] font-bold text-[#34405b]">{{ t('createQuest.scopeLabel') }}</legend>
         <div class="grid grid-cols-2 gap-2">
           <button
             v-for="option in ['group', 'personal']"
             :key="option"
             type="button"
-            class="rounded-2xl border px-3 py-3 text-sm font-medium transition"
-            :class="scope === option ? 'border-violet-400 bg-violet-500/20 text-white' : 'border-white/10 bg-white/5 text-slate-400'"
+            class="rounded-xl border p-2.5 text-left text-[12px] font-bold transition"
+            :class="scope === option ? 'border-[#8e76ee] bg-[#eeeaff] text-[#543cb1]' : 'border-[#e0e4ed] bg-[#f8f9fd] text-[#65718a]'"
+            :aria-pressed="scope === option"
             @click="setScope(option)"
           >
             {{ t(`createQuest.${option === 'group' ? 'forGroup' : 'personal'}`) }}
-            <span v-if="option === 'group' && authStore.user?.group?.name" class="mt-1 block truncate text-xs opacity-70">{{ authStore.user.group.name }}</span>
+            <span v-if="option === 'group' && authStore.user?.group?.name" class="mt-1 block truncate text-[11px] font-normal">{{ authStore.user.group.name }}</span>
           </button>
         </div>
       </fieldset>
-
       <label class="block">
-        <span class="mb-2 block text-sm font-medium text-slate-200">{{ t('createQuest.typeLabel') }}</span>
-        <select v-model="type" class="w-full rounded-2xl border border-white/10 bg-[#121726] px-4 py-3 text-sm text-white outline-none focus:border-violet-400">
+        <span class="mb-2 block text-[12px] font-bold text-[#34405b]">{{ t('createQuest.typeLabel') }}</span>
+        <select v-model="type" class="quest-field text-sm">
           <option v-for="item in visibleTypes" :key="item" :value="item">{{ t(`quests.types.${item}`) }}</option>
         </select>
       </label>
-
       <label class="block">
-        <span class="mb-2 block text-sm font-medium text-slate-200">{{ t('createQuest.deadlineLabel') }}</span>
-        <input v-model="deadline" type="datetime-local" class="w-full rounded-2xl border border-white/10 bg-[#121726] px-4 py-3 text-sm text-white outline-none focus:border-violet-400">
+        <span class="mb-2 block text-[12px] font-bold text-[#34405b]">{{ t('createQuest.descriptionLabel') }}</span>
+        <textarea v-model="description" rows="4" class="quest-field resize-none text-sm" :placeholder="t('createQuest.descriptionPlaceholder')" />
       </label>
-
-      <p v-if="formError" class="rounded-2xl bg-rose-500/10 p-3 text-sm text-rose-200">{{ formError }}</p>
-
-      <button
-        type="submit"
-        class="w-full rounded-2xl bg-violet-500 px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-violet-400 disabled:cursor-not-allowed disabled:opacity-60"
-        :disabled="isSubmitting"
-      >
+      <label class="block">
+        <span class="mb-2 block text-[12px] font-bold text-[#34405b]">{{ t('createQuest.deadlineLabel') }}</span>
+        <input v-model="deadline" type="datetime-local" class="quest-field text-sm">
+      </label>
+      <p v-if="formError" class="rounded-xl bg-[#fff0f0] p-3 text-sm text-[#ae3549]" role="alert">{{ formError }}</p>
+      <button type="submit" class="quest-action w-full px-4 py-3 text-sm" :disabled="isSubmitting">
         {{ isSubmitting ? t('common.loading') : t('createQuest.submit') }}
       </button>
     </form>

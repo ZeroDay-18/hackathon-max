@@ -1,21 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  color: #f8fafc;
-  background: #070913;
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  color: #172443;
+  background: #0d172a;
 }
 
 body {
   min-width: 320px;
   min-height: 100dvh;
   margin: 0;
-  background:
-    radial-gradient(circle at 0 0, rgb(124 58 237 / 0.15), transparent 28rem),
-    radial-gradient(circle at 100% 35%, rgb(59 130 246 / 0.1), transparent 25rem),
-    #070913;
+  background: #0d172a;
 }
 
 button,
@@ -25,22 +22,98 @@ select {
   font: inherit;
 }
 
-button {
-  cursor: pointer;
-}
+button { cursor: pointer; }
 
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid #a78bfa;
+  outline: 3px solid #604bec;
   outline-offset: 2px;
 }
 
-.no-scrollbar {
-  scrollbar-width: none;
+.quest-page {
+  min-height: 100dvh;
+  max-width: 440px;
+  margin: 0 auto;
+  padding-bottom: calc(96px + env(safe-area-inset-bottom));
+  background: #f1f3f9;
+  box-shadow: 0 0 55px rgb(4 10 28 / 35%);
 }
 
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+.quest-page--plain {
+  padding: max(24px, env(safe-area-inset-top)) 16px 32px;
+}
+
+.quest-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 390px;
+  padding: max(20px, env(safe-area-inset-top)) 19px 70px;
+  color: white;
+  background: #18355a url('/realm.svg') center 40% / cover no-repeat;
+}
+
+.quest-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(8 24 57 / 68%) 0%, rgb(9 30 57 / 28%) 45%, rgb(11 31 44 / 75%) 100%);
+}
+
+.quest-hero > * { position: relative; z-index: 1; }
+
+.paper-card {
+  border: 1px solid #dce1ef;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 7px 18px rgb(35 43 94 / 8%), 0 2px 4px rgb(35 43 94 / 5%);
+}
+
+.paper-subtle {
+  border: 1px solid #e1e5f0;
+  border-radius: 13px;
+  background: #f8f9fd;
+}
+
+.quest-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 12px;
+  background: linear-gradient(110deg, #6045e7, #7856f5);
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 5px 13px rgb(93 65 226 / 22%);
+  transition: filter .2s, transform .2s;
+}
+
+.quest-action:hover { filter: brightness(1.08); }
+.quest-action:active { transform: scale(.98); }
+.quest-action:disabled { opacity: .6; cursor: not-allowed; }
+
+.quest-field {
+  width: 100%;
+  border: 1px solid #dce1ef;
+  border-radius: 12px;
+  background: #fafbff;
+  padding: 11px 13px;
+  color: #172443;
+  outline: none;
+}
+
+.quest-field:focus { border-color: #7856f5; }
+.quest-field::placeholder { color: #8e99b1; }
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+@media (min-width: 640px) {
+  .quest-page { border-left: 1px solid #354064; border-right: 1px solid #354064; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }

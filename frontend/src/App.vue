@@ -19,8 +19,6 @@ watch(
 </script>
 
 <template>
-  <main>
-    <RouterView />
-  </main>
+  <RouterView />
   <TabBar v-if="!$route.meta.hideTabBar" />
 </template>

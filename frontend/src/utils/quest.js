@@ -2,24 +2,24 @@ export const questTypes = ['homework', 'lab', 'exam_prep', 'poll', 'personal'];
 
 export const questTypeStyles = {
   homework: {
-    icon: 'assignment',
-    color: 'bg-violet-500/15 text-violet-300 ring-violet-400/20',
+    icon: 'menu_book',
+    color: 'bg-[#e8d7fb] text-[#7940c5] ring-[#d9bbf4]',
   },
   lab: {
     icon: 'science',
-    color: 'bg-sky-500/15 text-sky-300 ring-sky-400/20',
+    color: 'bg-[#ede1ff] text-[#7651d5] ring-[#dac6ff]',
   },
   exam_prep: {
     icon: 'school',
-    color: 'bg-amber-500/15 text-amber-300 ring-amber-400/20',
+    color: 'bg-[#ccecfb] text-[#1688bf] ring-[#a6dcf3]',
   },
   poll: {
     icon: 'how_to_vote',
-    color: 'bg-emerald-500/15 text-emerald-300 ring-emerald-400/20',
+    color: 'bg-[#fff0ce] text-[#b9770c] ring-[#f8dda1]',
   },
   personal: {
     icon: 'person',
-    color: 'bg-pink-500/15 text-pink-300 ring-pink-400/20',
+    color: 'bg-[#e1f6ec] text-[#23805a] ring-[#c0e8d4]',
   },
 };
 
