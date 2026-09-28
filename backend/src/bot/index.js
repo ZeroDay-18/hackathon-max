@@ -50,7 +50,6 @@ bot.use(async (ctx, next) => {
     return;
   } catch (error) {
     console.error('Ошибка в корневом миддлваре:', error);
-    return await next();
   }
 });
 
@@ -59,7 +58,10 @@ bot.api.setMyCommands([
 ]);
 
 bot.command('ping', async (ctx) => {
-  const chatId = ctx.update?.message?.chat?.chat_id || ctx.update?.message?.sender?.user_id;
+  const chatId = ctx.update?.message?.recipient?.chat_id ||
+                 ctx.update?.message?.chat?.chat_id ||
+                 ctx.chatId;
+
   if (chatId) {
     await ctx.api.sendMessageToChat(String(chatId), 'pong');
   }

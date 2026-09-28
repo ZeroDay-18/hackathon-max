@@ -11,8 +11,8 @@ const router = createRouter({
       meta: { hideTabBar: true }
     },
     {
-      path: '/schedule',
-      name: 'schedule',
+      path: '/main',
+      name: 'main',
       component: () => import('@/views/HomeworkView.vue'),
     },
     {
