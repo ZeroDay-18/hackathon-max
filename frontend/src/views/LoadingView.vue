@@ -24,8 +24,7 @@ const statusMessage = ref('Загружаем приложение...');
 
 onMounted(async () => {
   try {
-    // Получаем initData из MAX SDK
-    const initData = window.Telegram?.WebApp?.initData || window.MAX?.initData;
+    const initData = window.WebApp?.initData;
 
     if (!initData) {
       statusMessage.value = 'Ошибка: данные авторизации не найдены';
