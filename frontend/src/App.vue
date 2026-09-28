@@ -6,7 +6,7 @@ import TabBar from './components/TabBar.vue'
   <main>
     <RouterView />
   </main>
-  <TabBar />
+  <TabBar v-if="!$route.meta.hideTabBar" />
 </template>
 
 <style scoped></style>
