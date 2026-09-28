@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '';
+
 export const useAuthStore = defineStore('auth', () => {
   const accessToken = ref('');
   const isAuth = ref(false);
@@ -20,7 +22,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function authenticateWithMax(initData) {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/max-miniapp`, {
+      const response = await fetch(`${VITE_BACKEND_URL}/api/auth/max-miniapp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
