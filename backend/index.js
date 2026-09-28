@@ -8,6 +8,7 @@ import db from './src/models/index.js'
 import './src/bot/index.js'
 
 import authRoutes from './src/routes/auth.routes.js'
+import questRoutes from './src/routes/quest.routes.js'
 
 const app = express();
 const port = 3000;
@@ -33,8 +34,17 @@ app.use(rateLimit({
 
 // Main
 app.use('/api/auth', authRoutes)
+app.use('/api/quests', questRoutes)
 app.get('/', (req, res) => {
   res.send('Hello World!');
+});
+
+app.use((error, req, res, next) => {
+  console.error('Unhandled API error:', error);
+  res.status(500).json({
+    success: false,
+    message: 'Internal server error',
+  });
 });
 
 try {

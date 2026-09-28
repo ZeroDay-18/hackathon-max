@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.store.js';
 
 const router = createRouter({
@@ -8,39 +8,65 @@ const router = createRouter({
       path: '/',
       name: 'init',
       component: () => import('@/views/LoadingView.vue'),
-      meta: { hideTabBar: true }
+      meta: { hideTabBar: true },
     },
     {
       path: '/main',
       name: 'main',
-      component: () => import('@/views/HomeworkView.vue'),
+      redirect: { name: 'dashboard' },
+    },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: () => import('@/views/DashboardView.vue'),
+    },
+    {
+      path: '/quests',
+      name: 'quests',
+      component: () => import('@/views/QuestListView.vue'),
+    },
+    {
+      path: '/quests/new',
+      name: 'quest-create',
+      component: () => import('@/views/QuestCreateView.vue'),
+      meta: { hideTabBar: true },
+    },
+    {
+      path: '/quests/:id',
+      name: 'quest-detail',
+      component: () => import('@/views/QuestDetailView.vue'),
+      meta: { hideTabBar: true },
     },
     {
       path: '/profile',
       name: 'profile',
-      component: () => import('@/views/HomeworkView.vue'),
+      component: () => import('@/views/ProfileView.vue'),
     },
     {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: () => import('@/views/ErrorVIew.vue'),
-      props: { 
-        title: 'Что-то пошло не так.', 
-        message: 'Пожалуйста, зайдите в приложение заного.' 
-      }
-    }
+      meta: { hideTabBar: true },
+      props: {
+        title: 'Что-то пошло не так.',
+        message: 'Пожалуйста, перезапустите приложение.',
+      },
+    },
   ],
-})
-
-router.beforeEach((to, from, next) => {
-  const isAuthenticated = useAuthStore().isAuth;
-  console.log(isAuthenticated)
-
-  if (to.path != "/" && to.name != "NotFound" && !isAuthenticated) {
-    next('/');
-  } else {
-    next();
-  }
 });
 
-export default router
+router.beforeEach((to) => {
+  const authStore = useAuthStore();
+
+  if (to.name !== 'init' && to.name !== 'NotFound' && !authStore.isAuth) {
+    return { name: 'init' };
+  }
+
+  if (to.name === 'init' && authStore.isAuth) {
+    return { name: 'dashboard' };
+  }
+
+  return true;
+});
+
+export default router;

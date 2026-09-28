@@ -48,7 +48,7 @@ onMounted(async () => {
         </p>
         <div class="w-full p-4">
             <h3>MAX INFO:</h3>
-            <textarea class="w-full h-40 rounded-2xl bg-neutral-950 p-4 text-emerald-300 font-mono">{{ textr }}</textarea>
+            <textarea :value="textr" readonly class="w-full h-40 rounded-2xl bg-neutral-950 p-4 text-emerald-300 font-mono"></textarea>
         </div>
         <div class="p-4">
             <p>initData: {{ initDataLog }}</p>
