@@ -36,12 +36,16 @@ GIGACHAT_TIMEOUT_MS=15000 таймаут
 docker compose -f docker-compose.yml up -d
 ```
 
-После запуска:
+## Используемые порты
 
-- frontend: `http://localhost:5173`;
-- backend: `http://localhost:3000`;
-- Adminer: `http://localhost:8080` только на localhost;
-- PostgreSQL доступен внутри Docker-сети как `postgres:5432`.
+| Компонент | Порт | URL |
+| --- | --- | --- |
+| Frontend | `5173` | `http://localhost:5173` |
+| Backend (Express API) | `3000` | `http://localhost:3000`; доступен только на localhost при запуске через Docker |
+| Adminer | `8080` | `http://localhost:8080`; доступен только на localhost |
+| PostgreSQL | `5432` | В основном Docker Compose доступен только внутри Docker-сети как `postgres:5432`; в режиме локальной разработки проброшен на `localhost:5432` |
+
+> Для публикации на сервере команды используется ещё один nginx и порты 80, 443 для http/https.
 
 ### Остановка и повторный запуск
 
