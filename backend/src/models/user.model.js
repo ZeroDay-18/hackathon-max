@@ -26,6 +26,15 @@ const UserModel = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    interfaceMode: {
+      type: DataTypes.ENUM('ru-serious', 'ru-game'),
+      allowNull: false,
+      defaultValue: 'ru-serious',
+    },
+    onboardingCompletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   });
 
   User.associate = (models) => {
@@ -34,6 +43,30 @@ const UserModel = (sequelize, DataTypes) => {
       as: 'group',
       onUpdate: 'CASCADE',
       onDelete: 'RESTRICT',
+    });
+    User.hasOne(models.userProgressions, {
+      foreignKey: 'userId',
+      as: 'progression',
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    });
+    User.hasMany(models.notifications, {
+      foreignKey: 'userId',
+      as: 'notifications',
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    });
+    User.hasMany(models.progressionEvents, {
+      foreignKey: 'userId',
+      as: 'progressionEvents',
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    });
+    User.hasMany(models.pollVotes, {
+      foreignKey: 'userId',
+      as: 'pollVotes',
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     });
   };
 

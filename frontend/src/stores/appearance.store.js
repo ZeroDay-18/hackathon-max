@@ -6,9 +6,11 @@ export const useAppearanceStore = defineStore('appearance', () => {
   const locale = ref('ru-serious');
 
   function applyLocale(nextLocale) {
-    locale.value = nextLocale;
-    i18n.global.locale.value = nextLocale;
+    const normalizedLocale = nextLocale === 'ru-game' ? 'ru-game' : 'ru-serious';
+    locale.value = normalizedLocale;
+    i18n.global.locale.value = normalizedLocale;
     document.documentElement.lang = 'ru';
+    document.documentElement.dataset.interfaceMode = normalizedLocale === 'ru-game' ? 'game' : 'serious';
   }
 
   applyLocale(locale.value);

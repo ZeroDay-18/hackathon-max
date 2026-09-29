@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 import { questApi } from '@/services/api.js';
+import { usePlayerStore } from '@/stores/player.store.js';
 
 function replaceQuest(quests, quest) {
   const index = quests.findIndex((item) => item.id === quest.id);
@@ -59,7 +60,8 @@ export const useQuestStore = defineStore('quests', () => {
       quest.progress = response.progress;
     }
 
-    return response.progress;
+    usePlayerStore().applyProgression(response.progression);
+    return response;
   }
 
   async function completePomodoro(id) {

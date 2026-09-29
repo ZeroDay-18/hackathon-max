@@ -9,7 +9,7 @@
   "scripts": {
     "prod": "docker compose -f ../docker-compose.yml up -d",
     "db:start": "docker compose -f ../docker-compose.dev.yml up -d",
-    "dev": "set NODE_EXTRA_CA_CERTS=./src/bot/cert/MDD.pem && npx nodemon ./index.js",
+    "dev": "set NODE_ENV=development&& set NODE_EXTRA_CA_CERTS=./src/bot/cert/MDD.pem&& npx nodemon ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

@@ -77,19 +77,11 @@ onBeforeUnmount(clearTicker);
 
 <template>
   <section class="paper-card p-5 text-center">
-    <p class="text-xs font-extrabold uppercase tracking-[0.15em] text-[#6552af]">
-      <span class="material-symbols-outlined mr-1 align-middle text-base" aria-hidden="true">hourglass_top</span>
+    <p class="text-xs font-extrabold tracking-[0.12em] text-[#c0adff]">
+      <span class="material-symbols-outlined mr-1 text-base" aria-hidden="true">hourglass_top</span>
       {{ t('timer.title') }} · {{ phase === 'focus' ? t('timer.work') : t('timer.break') }}
     </p>
-    <p class="mt-2 text-[46px] font-extrabold tracking-tight text-[#1b2847] tabular-nums" role="timer">{{ displayTime }}</p>
-
-    <div class="mt-4 flex justify-center gap-2">
-      <button type="button" class="quest-action min-w-32 px-5 py-2.5 text-sm" @click="isRunning ? pause() : start()">
-        {{ isRunning ? t('timer.pause') : secondsLeft === (phase === 'focus' ? focusSeconds : breakSeconds) ? t('timer.start') : t('timer.resume') }}
-      </button>
-      <button type="button" class="rounded-xl border border-[#dce1ef] bg-[#f4f5fb] px-4 py-2.5 text-sm font-semibold text-[#53617c]" @click="reset">
-        {{ t('timer.reset') }}
-      </button>
-    </div>
+    <p class="mt-2 text-[46px] font-extrabold tracking-tight text-white tabular-nums" role="timer">{{ displayTime }}</p>
+    <div class="mt-4 flex justify-center gap-2"><button type="button" class="quest-action min-w-32 px-5 py-2.5 text-sm" @click="isRunning ? pause() : start()">{{ isRunning ? t('timer.pause') : secondsLeft === (phase === 'focus' ? focusSeconds : breakSeconds) ? t('timer.start') : t('timer.resume') }}</button><button type="button" class="rounded-xl border border-white/10 bg-white/7 px-4 py-2.5 text-sm font-semibold text-[#c2cee4]" @click="reset">{{ t('timer.reset') }}</button></div>
   </section>
 </template>

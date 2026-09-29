@@ -1,57 +1,46 @@
 @import "tailwindcss";
 
 :root {
+  color: #f3f6ff;
+  background: #0b1020;
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  color: #172443;
-  background: #0d172a;
 }
 
 body {
   min-width: 320px;
   min-height: 100dvh;
   margin: 0;
-  background: #0d172a;
+  background:
+    radial-gradient(circle at 18% -8%, rgb(91 73 199 / 36%), transparent 35rem),
+    radial-gradient(circle at 100% 38%, rgb(25 145 204 / 19%), transparent 30rem),
+    #0b1020;
 }
 
-button,
-input,
-textarea,
-select {
-  font: inherit;
-}
-
+button, input, textarea, select { font: inherit; }
 button { cursor: pointer; }
-
-button:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible {
-  outline: 3px solid #604bec;
-  outline-offset: 2px;
-}
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid #ad94ff; outline-offset: 2px; }
+.material-symbols-outlined { display: inline-flex; align-items: center; justify-content: center; line-height: 1; vertical-align: middle; }
 
 .quest-page {
   min-height: 100dvh;
   max-width: 440px;
   margin: 0 auto;
-  padding-bottom: calc(96px + env(safe-area-inset-bottom));
-  background: #f1f3f9;
-  box-shadow: 0 0 55px rgb(4 10 28 / 35%);
+  padding-bottom: calc(94px + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, #121a30 0%, #0a1020 100%);
+  box-shadow: 0 0 55px rgb(0 0 0 / 38%);
 }
 
-.quest-page--plain {
-  padding: max(24px, env(safe-area-inset-top)) 16px 32px;
-}
+.quest-page--plain { padding: max(22px, env(safe-area-inset-top)) 16px 32px; }
 
 .quest-hero {
   position: relative;
   overflow: hidden;
-  min-height: 390px;
-  padding: max(20px, env(safe-area-inset-top)) 19px 70px;
+  min-height: 365px;
+  padding: max(18px, env(safe-area-inset-top)) 19px 85px;
   color: white;
-  background: #18355a url('/realm.svg') center 40% / cover no-repeat;
+  background: #173863 url('/realm.svg') center 37% / cover no-repeat;
 }
 
 .quest-hero::before {
@@ -59,61 +48,68 @@ select:focus-visible {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(180deg, rgb(8 24 57 / 68%) 0%, rgb(9 30 57 / 28%) 45%, rgb(11 31 44 / 75%) 100%);
+  background: linear-gradient(180deg, rgb(7 18 47 / 72%) 0%, rgb(13 32 60 / 16%) 44%, rgb(10 17 32 / 82%) 100%);
 }
-
 .quest-hero > * { position: relative; z-index: 1; }
 
-.paper-card {
-  border: 1px solid #dce1ef;
-  border-radius: 18px;
-  background: #fff;
-  box-shadow: 0 7px 18px rgb(35 43 94 / 8%), 0 2px 4px rgb(35 43 94 / 5%);
+.paper-card, .paper-subtle {
+  border: 1px solid rgb(182 196 233 / 18%);
+  color: #edf3ff;
+  background: linear-gradient(145deg, rgb(32 43 70 / 92%), rgb(20 28 49 / 92%));
+  box-shadow: 0 11px 26px rgb(0 0 0 / 20%), inset 0 1px rgb(255 255 255 / 4%);
+  backdrop-filter: blur(16px);
 }
+.paper-card { border-radius: 19px; }
+.paper-subtle { border-radius: 14px; background: rgb(7 14 30 / 40%); }
 
-.paper-subtle {
-  border: 1px solid #e1e5f0;
-  border-radius: 13px;
-  background: #f8f9fd;
-}
-
-.quest-action {
+.quest-action, .onboarding-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border-radius: 12px;
-  background: linear-gradient(110deg, #6045e7, #7856f5);
+  border-radius: 13px;
+  background: linear-gradient(112deg, #7150e8, #5e82f2);
   color: white;
-  font-weight: 700;
-  box-shadow: 0 5px 13px rgb(93 65 226 / 22%);
-  transition: filter .2s, transform .2s;
+  font-weight: 750;
+  box-shadow: 0 7px 18px rgb(82 58 213 / 35%), inset 0 1px rgb(255 255 255 / 23%);
+  transition: filter .18s ease, transform .18s ease;
 }
-
-.quest-action:hover { filter: brightness(1.08); }
-.quest-action:active { transform: scale(.98); }
-.quest-action:disabled { opacity: .6; cursor: not-allowed; }
+.quest-action:hover, .onboarding-primary:hover { filter: brightness(1.1); }
+.quest-action:active, .onboarding-primary:active { transform: scale(.98); }
+.quest-action:disabled, .onboarding-primary:disabled { cursor: not-allowed; opacity: .58; }
 
 .quest-field {
   width: 100%;
-  border: 1px solid #dce1ef;
+  border: 1px solid rgb(187 200 236 / 20%);
   border-radius: 12px;
-  background: #fafbff;
+  background: rgb(5 11 26 / 49%);
   padding: 11px 13px;
-  color: #172443;
+  color: #f3f6ff;
   outline: none;
 }
+.quest-field:focus { border-color: #957df5; box-shadow: 0 0 0 3px rgb(135 104 235 / 16%); }
+.quest-field::placeholder { color: #95a1be; }
 
-.quest-field:focus { border-color: #7856f5; }
-.quest-field::placeholder { color: #8e99b1; }
+.onboarding-page {
+  position: relative;
+  display: grid;
+  min-height: 100dvh;
+  place-items: center;
+  overflow: hidden;
+  padding: 24px 16px;
+  background: #0a1020 url('/realm.svg') center / cover no-repeat;
+}
+.onboarding-page::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(6 13 34 / 64%), rgb(9 10 29 / 91%)); }
+.onboarding-stars { position: absolute; inset: 0; opacity: .55; background-image: radial-gradient(#ffe8a8 1px, transparent 1.5px), radial-gradient(#c6dcff 1px, transparent 1.5px); background-position: 18px 31px, 98px 108px; background-size: 93px 88px, 127px 135px; pointer-events: none; }
+.onboarding-card { position: relative; z-index: 1; width: min(100%, 386px); padding: 29px 24px; border: 1px solid rgb(183 196 241 / 25%); border-radius: 26px; background: linear-gradient(145deg, rgb(24 34 63 / 91%), rgb(15 20 43 / 94%)); box-shadow: 0 22px 55px rgb(0 0 0 / 44%), inset 0 1px rgb(255 255 255 / 8%); backdrop-filter: blur(18px); }
+.brand-mark { display: grid; width: 58px; height: 58px; place-items: center; border: 1px solid rgb(255 235 162 / 68%); border-radius: 17px; color: #ffdf84; background: linear-gradient(145deg, #8667ef, #3c368e); box-shadow: 0 4px 0 #262259, 0 12px 25px rgb(89 61 204 / 38%); }
+.loading-orb { width: 14px; height: 14px; border: 2px solid #b7a9f7; border-top-color: transparent; border-radius: 50%; animation: spin .8s linear infinite; }
+.onboarding-steps { display: flex; justify-content: center; gap: 7px; }.onboarding-steps span { width: 7px; height: 7px; border-radius: 99px; background: #647093; }.onboarding-steps .is-active { width: 22px; background: #af9aff; }
+.style-choice { display: grid; grid-template-columns: 42px 1fr 24px; align-items: center; gap: 12px; width: 100%; padding: 14px; border: 1px solid rgb(183 196 241 / 18%); border-radius: 16px; text-align: left; color: #d9e3f9; background: rgb(3 10 27 / 39%); }.style-choice.is-selected { border-color: #a488fb; background: rgb(116 81 224 / 20%); box-shadow: 0 0 0 3px rgb(124 93 233 / 12%); }.style-choice__icon { width: 42px; height: 42px; border-radius: 12px; color: #a88dff; background: rgb(139 109 237 / 17%); }.style-choice--game .style-choice__icon { color: #ffd374; background: rgb(238 166 58 / 15%); }.style-choice strong { display: block; font-size: 14px; color: white; }.style-choice small { display: block; margin-top: 2px; font-size: 11px; color: #afbddb; }.style-choice__check { color: transparent; }.style-choice.is-selected .style-choice__check { color: #ae9aff; }
 
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
-@media (min-width: 640px) {
-  .quest-page { border-left: 1px solid #354064; border-right: 1px solid #354064; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (min-width: 640px) { .quest-page { border-right: 1px solid #2e3c61; border-left: 1px solid #2e3c61; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }

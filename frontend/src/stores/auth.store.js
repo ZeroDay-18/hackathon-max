@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
 
-const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '';
+const backendUrl = (import.meta.env.VITE_BACKEND_URL || '').replace(/\/$/, '');
 
 export const useAuthStore = defineStore('auth', () => {
   const accessToken = ref('');
@@ -14,6 +14,10 @@ export const useAuthStore = defineStore('auth', () => {
     isAuth.value = true;
   }
 
+  function updateUser(userData) {
+    user.value = userData;
+  }
+
   function clearAuth() {
     accessToken.value = '';
     user.value = null;
@@ -22,34 +26,27 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function authenticateWithMax(initData) {
     try {
-      const response = await fetch(`${VITE_BACKEND_URL}/api/auth/max-miniapp`, {
+      const response = await fetch(`${backendUrl}/api/auth/max-miniapp`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ initData }),
       });
-
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(data.message || 'Authentication failed');
+        const error = new Error(data.message || 'Authentication failed');
+        error.code = data.code;
+        error.status = response.status;
+        throw error;
       }
 
       setAuth(data.token, data.user);
-      return { success: true, user: data.user };
+      return { success: true, user: data.user, progression: data.progression };
     } catch (error) {
       console.error('Auth error:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: error.message, code: error.code, status: error.status };
     }
   }
 
-  return {
-    accessToken,
-    isAuth,
-    user,
-    setAuth,
-    clearAuth,
-    authenticateWithMax
-  }
-})
+  return { accessToken, isAuth, user, setAuth, updateUser, clearAuth, authenticateWithMax };
+});

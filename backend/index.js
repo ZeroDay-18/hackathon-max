@@ -9,6 +9,9 @@ import './src/bot/index.js'
 
 import authRoutes from './src/routes/auth.routes.js'
 import questRoutes from './src/routes/quest.routes.js'
+import profileRoutes from './src/routes/profile.routes.js'
+import pollRoutes from './src/routes/poll.routes.js'
+import notificationRoutes from './src/routes/notification.routes.js'
 
 const app = express();
 const port = 3000;
@@ -34,7 +37,10 @@ app.use(rateLimit({
 
 // Main
 app.use('/api/auth', authRoutes)
+app.use('/api/profile', profileRoutes)
 app.use('/api/quests', questRoutes)
+app.use('/api/polls', pollRoutes)
+app.use('/api/notifications', notificationRoutes)
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
