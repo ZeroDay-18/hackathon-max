@@ -52,3 +52,11 @@ export const notificationApi = {
   list: () => request('/api/notifications'),
   markRead: (id) => request(`/api/notifications/${id}/read`, { method: 'PATCH' }),
 };
+
+export const emotionDiaryApi = {
+  list: () => request('/api/emotion-diary'),
+  summary: (period, timezone) => request(`/api/emotion-diary/summary?period=${period}&timezone=${encodeURIComponent(timezone)}`),
+  create: (payload) => request('/api/emotion-diary', { method: 'POST', body: JSON.stringify(payload) }),
+  update: (id, payload) => request(`/api/emotion-diary/${id}`, { method: 'PATCH', body: JSON.stringify(payload) }),
+  remove: (id) => request(`/api/emotion-diary/${id}`, { method: 'DELETE' }),
+};

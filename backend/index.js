@@ -12,6 +12,7 @@ import questRoutes from './src/routes/quest.routes.js'
 import profileRoutes from './src/routes/profile.routes.js'
 import pollRoutes from './src/routes/poll.routes.js'
 import notificationRoutes from './src/routes/notification.routes.js'
+import emotionDiaryRoutes from './src/routes/emotion-diary.routes.js'
 
 const app = express();
 const port = 3000;
@@ -41,6 +42,7 @@ app.use('/api/profile', profileRoutes)
 app.use('/api/quests', questRoutes)
 app.use('/api/polls', pollRoutes)
 app.use('/api/notifications', notificationRoutes)
+app.use('/api/emotion-diary', emotionDiaryRoutes)
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });

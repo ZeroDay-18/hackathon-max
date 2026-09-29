@@ -19,6 +19,8 @@ const router = createRouter({
     { path: '/notifications', name: 'notifications', component: () => import('@/views/NotificationsView.vue'), meta: { hideTabBar: true } },
     { path: '/guild', name: 'guild', component: () => import('@/views/GuildView.vue') },
     { path: '/profile', name: 'profile', component: () => import('@/views/ProfileView.vue') },
+    { path: '/settings', name: 'settings', component: () => import('@/views/SettingsView.vue'), meta: { hideTabBar: true } },
+    { path: '/emotion-diary', name: 'emotion-diary', component: () => import('@/views/EmotionDiaryView.vue'), meta: { hideTabBar: true } },
     {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',

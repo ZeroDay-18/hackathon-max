@@ -8,8 +8,8 @@ const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 
-const tabIndex = computed(() => ({ dashboard: 0, quests: 1, guild: 2, profile: 3 }[route.name] ?? 1));
-const hasVideoBackground = computed(() => ['dashboard', 'quests', 'guild', 'profile'].includes(route.name));
+const tabIndex = computed(() => ({ dashboard: 0, quests: 1, guild: 2, profile: 3, settings: 3, 'emotion-diary': 3 }[route.name] ?? 1));
+const hasVideoBackground = computed(() => ['dashboard', 'quests', 'guild', 'profile', 'settings', 'emotion-diary'].includes(route.name));
 const backgroundStyle = computed(() => ({
   '--background-parallax-x': `${[-3, -1, 1, 3][tabIndex.value]}%`,
   '--background-parallax-y': `${[2, 3, 4, 5][tabIndex.value]}%`,
