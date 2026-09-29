@@ -2,6 +2,7 @@ import { Op } from 'sequelize';
 import db from '../models/index.js';
 import { awardQuestCompletion } from '../services/progression.service.js';
 import { notifyGroupAboutQuest, notifyUserAboutCompletion } from '../services/notification.service.js';
+import { notifyGroupInBot } from '../bot/delivery.service.js';
 
 const Quest = db.quests;
 const QuestProgress = db.questProgresses;
@@ -163,6 +164,12 @@ export async function createQuest(req, res, next) {
       });
 
       return createdQuest;
+    });
+
+    void notifyGroupInBot({
+      groupId: quest.groupId,
+      creatorId: creator.id,
+      quest,
     });
 
     const fullQuest = await Quest.findByPk(quest.id, {

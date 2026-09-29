@@ -1,24 +1,30 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { computed } from 'vue';
+import { Avatar, Style } from '@dicebear/core';
+import pixelArt from '@dicebear/styles/pixel-art.json';
 
 const props = defineProps({
   name: { type: String, default: '' },
-  photoUrl: { type: String, default: null },
+  seed: { type: String, default: '' },
 });
 
-const imageFailed = ref(false);
-watch(() => props.photoUrl, () => { imageFailed.value = false; });
+const source = computed(() => {
+  const stableSeed = props.seed || props.name || 'studyquest-user';
+  const style = new Style(pixelArt);
+  const avatar = new Avatar(style, {
+    seed: stableSeed,
+    backgroundColor: ['b6e3f4', 'c0aede', 'd1d4f9'],
+    backgroundType: ['solid'],
+    radius: 18,
+    size: 160,
+  });
+
+  return avatar.toDataUri();
+});
 </script>
 
 <template>
-  <span class="inline-grid shrink-0 place-items-center overflow-hidden rounded-[14px] border-2 border-[#ae9ff8] bg-[#291e60] font-black text-[#e7dcff] shadow-[0_3px_0_#412d8e,0_5px_12px_#120d33]">
-    <img
-      v-if="photoUrl && !imageFailed"
-      :src="photoUrl"
-      :alt="name"
-      class="h-full w-full object-cover"
-      @error="imageFailed = true"
-    >
-    <span v-else aria-hidden="true">{{ name.slice(0, 1).toLocaleUpperCase('ru') || '?' }}</span>
+  <span class="inline-grid shrink-0 place-items-center overflow-hidden rounded-[14px] border-2 border-[#ae9ff8] bg-[#291e60] shadow-[0_3px_0_#412d8e,0_5px_12px_#120d33]">
+    <img :src="source" :alt="name || 'Аватар пользователя'" class="h-full w-full object-cover" decoding="async">
   </span>
 </template>

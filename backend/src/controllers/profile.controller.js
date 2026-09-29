@@ -11,6 +11,7 @@ function serializeUser(user) {
     firstName: user.firstName,
     lastName: user.lastName,
     photoUrl: user.photoUrl,
+    avatarSeed: user.avatarSeed || user.maxId,
     group: user.group
       ? { id: user.group.id, name: user.group.name }
       : null,
@@ -26,6 +27,10 @@ export async function getProfile(req, res, next) {
     const user = await User.findByPk(req.user.id, {
       include: [{ model: Group, as: 'group', attributes: ['id', 'name'] }],
     });
+    if (!user.avatarSeed) {
+      await user.update({ avatarSeed: user.maxId });
+    }
+
     const progression = await getOrCreateProgression(user.id);
 
     return res.json({

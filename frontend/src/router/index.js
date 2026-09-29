@@ -16,7 +16,7 @@ const router = createRouter({
     { path: '/quests/:id', name: 'quest-detail', component: () => import('@/views/QuestDetailView.vue'), meta: { hideTabBar: true } },
     { path: '/quests/:id/reward', name: 'quest-reward', component: () => import('@/views/QuestRewardView.vue'), meta: { hideTabBar: true } },
     { path: '/polls/:id', name: 'poll-detail', component: () => import('@/views/PollDetailView.vue'), meta: { hideTabBar: true } },
-    { path: '/notifications', name: 'notifications', component: () => import('@/views/NotificationsView.vue') },
+    { path: '/notifications', name: 'notifications', component: () => import('@/views/NotificationsView.vue'), meta: { hideTabBar: true } },
     { path: '/guild', name: 'guild', component: () => import('@/views/GuildView.vue') },
     { path: '/profile', name: 'profile', component: () => import('@/views/ProfileView.vue') },
     {

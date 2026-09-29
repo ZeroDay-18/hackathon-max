@@ -23,13 +23,19 @@ button { cursor: pointer; }
 button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid #ad94ff; outline-offset: 2px; }
 .material-symbols-outlined { display: inline-flex; align-items: center; justify-content: center; line-height: 1; vertical-align: middle; }
 
+.app-shell { position: relative; min-height: 100dvh; isolation: isolate; }
+.app-shell__content { position: relative; z-index: 1; }
+.app-video-background { position: fixed; z-index: 0; inset: 0; overflow: hidden; background: #0a1020; pointer-events: none; }
+.app-video-background__media { width: 112%; height: 112%; object-fit: cover; object-position: center bottom; transform: translate3d(var(--background-parallax-x), var(--background-parallax-y), 0) scale(1.04); transform-origin: center bottom; will-change: transform; transition: transform 240ms cubic-bezier(.22, 1, .36, 1); }
+.app-video-background__scrim { position: absolute; inset: 0; background: linear-gradient(180deg, rgb(5 10 24 / 40%), rgb(8 12 28 / 76%) 72%, rgb(7 12 27 / 92%)); }
 .quest-page {
   min-height: 100dvh;
   max-width: 440px;
   margin: 0 auto;
   padding-bottom: calc(94px + env(safe-area-inset-bottom));
-  background: linear-gradient(180deg, #121a30 0%, #0a1020 100%);
+  background: linear-gradient(180deg, rgb(13 20 39 / 53%) 0%, rgb(7 12 28 / 72%) 100%);
   box-shadow: 0 0 55px rgb(0 0 0 / 38%);
+  backdrop-filter: blur(2px);
 }
 
 .quest-page--plain { padding: max(22px, env(safe-area-inset-top)) 16px 32px; }
@@ -40,7 +46,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   min-height: 365px;
   padding: max(18px, env(safe-area-inset-top)) 19px 85px;
   color: white;
-  background: #173863 url('/realm.svg') center 37% / cover no-repeat;
+  background: linear-gradient(180deg, rgb(20 51 91 / 60%), rgb(14 24 49 / 62%));
+  backdrop-filter: blur(2px);
 }
 
 .quest-hero::before {
@@ -112,4 +119,4 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (min-width: 640px) { .quest-page { border-right: 1px solid #2e3c61; border-left: 1px solid #2e3c61; } }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+@media (prefers-reduced-motion: reduce) { .app-video-background__media { display: none; } *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }

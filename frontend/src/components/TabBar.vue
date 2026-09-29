@@ -28,6 +28,6 @@ function isActive(tab) { return tab.name === 'quests' ? route.path.startsWith('/
 
 <style scoped>
 .tabbar-safe { background: #0e182c; padding-bottom: max(9px, env(safe-area-inset-bottom)); }
-.nav-icon { font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
+.nav-icon { font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
 .nav-icon--active { font-variation-settings: 'FILL' 1, 'wght' 650, 'GRAD' 0, 'opsz' 24; filter: drop-shadow(0 0 6px rgb(174 144 255 / .55)); }
 </style>

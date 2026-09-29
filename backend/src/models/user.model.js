@@ -17,6 +17,10 @@ const UserModel = (sequelize, DataTypes) => {
       type: DataTypes.STRING(2048),
       allowNull: true,
     },
+    avatarSeed: {
+      type: DataTypes.STRING(128),
+      allowNull: true,
+    },
     acceptTerms: {
       type: DataTypes.BOOLEAN,
       allowNull: false,

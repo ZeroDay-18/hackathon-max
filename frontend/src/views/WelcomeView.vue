@@ -14,7 +14,7 @@ const fullName = computed(() => [authStore.user?.firstName, authStore.user?.last
     <div class="onboarding-stars" aria-hidden="true" />
     <section class="onboarding-card text-center">
       <div class="brand-mark mx-auto"><span class="material-symbols-outlined text-[33px]" aria-hidden="true">auto_stories</span></div>
-      <AvatarFrame :name="fullName" :photo-url="authStore.user?.photoUrl" class="mx-auto mt-8 h-[78px] w-[78px] text-3xl" />
+      <AvatarFrame :name="fullName" :seed="authStore.user?.avatarSeed || authStore.user?.maxId" class="mx-auto mt-8 h-[78px] w-[78px] text-3xl" />
       <p class="mt-6 text-sm text-[#b8cae9]">Добро пожаловать,</p>
       <h1 class="mt-1 text-[26px] font-black tracking-tight text-white">{{ fullName }}</h1>
       <p class="mx-auto mt-4 max-w-[290px] text-sm leading-6 text-[#c7d4ec]">Здесь задания превращаются в понятный маршрут: сроки, фокус и прогресс — в одном месте.</p>

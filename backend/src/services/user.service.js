@@ -68,6 +68,7 @@ export async function registerUser({
           firstName: normalizedFirstName,
           lastName: normalizedLastName,
           photoUrl,
+          avatarSeed: normalizedMaxId,
           acceptTerms,
           groupId: group.id,
         },

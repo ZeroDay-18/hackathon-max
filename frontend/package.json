@@ -13,6 +13,8 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
+    "@dicebear/core": "^10.7.0",
+    "@dicebear/styles": "^10.6.0",
     "@tailwindcss/vite": "^4.3.3",
     "material-symbols": "^0.47.5",
     "pinia": "^4.0.3",

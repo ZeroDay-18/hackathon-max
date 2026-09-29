@@ -60,7 +60,7 @@ onMounted(async () => {
       </header>
 
       <div class="mt-8 flex items-center gap-4">
-        <AvatarFrame :name="fullName" :photo-url="authStore.user?.photoUrl" class="h-[72px] w-[72px] text-3xl" />
+        <AvatarFrame :name="fullName" :seed="authStore.user?.avatarSeed || authStore.user?.maxId" class="h-[72px] w-[72px] text-3xl" />
         <div class="min-w-0 flex-1 drop-shadow-md">
           <h1 class="truncate text-[20px] font-extrabold">{{ fullName }}</h1>
           <p class="mt-1 text-xs text-[#e1ebff]">{{ t('profile.group') }} · {{ authStore.user?.group?.name || '—' }}</p>

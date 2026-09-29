@@ -1,4 +1,5 @@
 import { defineScenario, transition, Keyboard } from '@maxhub/max-bot-api';
+import { sendMiniAppEntryToUser } from '../delivery.service.js';
 import { registerUser } from '../../services/user.service.js';
 
 async function sendReply(sctx, text, options = {}) {
@@ -50,6 +51,18 @@ function clearRegistrationSession(session) {
 export const onboardingScenario = defineScenario()({
   id: 'onboarding',
   initialStep: 'policy',
+  intercept: async ({ ctx }) => {
+    const text = ctx.update?.message?.body?.text?.trim();
+    if (text === '/cancel') {
+      await ctx.reply('Регистрация отменена. Отправьте /start, когда будете готовы продолжить.');
+      return transition.cancel();
+    }
+    if (text === '/help') {
+      await ctx.reply('Для регистрации подтвердите условия, укажите группу и затем фамилию с именем. /cancel — отмена.');
+      return transition.stay();
+    }
+    return null;
+  },
   steps: {
     policy: async (sctx) => {
       const payload = sctx.ctx.update?.callback?.payload;
@@ -171,10 +184,9 @@ export const onboardingScenario = defineScenario()({
 
       if (callbackId && typeof sctx.ctx.api.answerOnCallback === 'function') {
         try {
-          await sctx.ctx.api.answerOnCallback(
-            callbackId,
-            payload === 'registration-confirm' ? 'Регистрируем...' : 'Начинаем заново',
-          );
+          await sctx.ctx.api.answerOnCallback(callbackId, {
+            message: { text: payload === 'registration-confirm' ? 'Регистрируем...' : 'Начинаем заново' },
+          });
         } catch {}
       }
 
@@ -241,6 +253,10 @@ export const onboardingScenario = defineScenario()({
         await sendReply(
           sctx,
           `✅ Регистрация завершена!\n\n👤 ${lastName} ${firstName}\n🎓 Группа: ${groupName}`,
+        );
+        await sendMiniAppEntryToUser(
+          maxId,
+          'Теперь StudyQuest готов к работе. Откройте приложение, чтобы видеть задания, прогресс и уведомления.\n\nМожно также отправить мне текст задания: сначала я покажу черновик, и только после вашего подтверждения создам квест.',
         );
 
         return transition.complete();

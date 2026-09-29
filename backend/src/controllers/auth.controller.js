@@ -30,6 +30,7 @@ function serializeUser(user, photoUrl = user.photoUrl) {
     firstName: user.firstName,
     lastName: user.lastName,
     photoUrl,
+    avatarSeed: user.avatarSeed || user.maxId,
     group: user.group ? { id: user.group.id, name: user.group.name } : null,
     preferences: {
       interfaceMode: user.interfaceMode,
