@@ -18,7 +18,7 @@ cd ./backend; npm run dev; cd ../
 
 ### Вход без MAX для локальной разработки
 
-1. Сначала зарегистрируйте тестового пользователя обычным способом, чтобы у него были группа и принятые условия.
+1. Сначала зарегистрируйте тестового пользователя обычным способом, чтобы у него были группа и принятые условия. (Через бота или впишите в таблицу users)
 2. В `backend/.env` добавьте его ID из таблицы `users`:
 
 ```env
@@ -34,10 +34,9 @@ DEV_USER_ID=1
 ```env
 GIGACHAT_AUTHORIZATION_KEY=base64-client-id-and-client-secret
 GIGACHAT_SCOPE=GIGACHAT_API_PERS
-GIGACHAT_MODEL=GigaChat-2-Max
+GIGACHAT_MODEL=GigaChat-2
+GIGACHAT_TIMEOUT_MS=15000
 ```
-
-Ключ остаётся только на бэкенде: не добавляйте его в `VITE_*`-переменные и не коммитьте `.env`.
 
 ### VueJS (Frontend)
 ```bash
