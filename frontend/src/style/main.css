@@ -25,7 +25,17 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .route-enter-active, .route-leave-active { transition: opacity 180ms cubic-bezier(0.23, 1, 0.32, 1), transform 180ms cubic-bezier(0.23, 1, 0.32, 1); }
 .route-enter-from { opacity: 0; transform: translate3d(0, 10px, 0); }
 .route-leave-to { opacity: 0; transform: translate3d(0, -5px, 0); }
-.material-symbols-outlined { display: inline-flex; align-items: center; justify-content: center; line-height: 1; vertical-align: middle; }
+/* Material Symbols have their own inline-block metrics. Force a shared flex box so glyphs
+   stay optically centered in every fixed-size icon container. */
+.material-symbols-outlined {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  line-height: 1 !important;
+  vertical-align: middle;
+  text-indent: 0;
+  transform: translateY(0.5px);
+}
 
 .app-shell { position: relative; min-height: 100dvh; isolation: isolate; }
 .app-shell__content { position: relative; z-index: 1; }
@@ -50,7 +60,6 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   min-height: 365px;
   padding: max(18px, env(safe-area-inset-top)) 19px 85px;
   color: white;
-  background: linear-gradient(180deg, rgb(20 51 91 / 60%), rgb(14 24 49 / 62%));
   backdrop-filter: blur(2px);
 }
 

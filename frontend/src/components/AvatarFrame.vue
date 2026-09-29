@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { Avatar, Style } from '@dicebear/core';
-import pixelArt from '@dicebear/styles/pixel-art.json';
+import definition from '@dicebear/styles/pixelbot.json' with { type: 'json' };
 
 const props = defineProps({
   name: { type: String, default: '' },
@@ -10,10 +10,9 @@ const props = defineProps({
 
 const source = computed(() => {
   const stableSeed = props.seed || props.name || 'studyquest-user';
-  const style = new Style(pixelArt);
+  const style = new Style(definition);
   const avatar = new Avatar(style, {
     seed: stableSeed,
-    backgroundColor: 'b6e3f4',
     borderRadius: 18,
     size: 160,
   });
