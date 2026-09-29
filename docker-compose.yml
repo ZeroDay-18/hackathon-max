@@ -18,6 +18,16 @@ services:
 
     restart: unless-stopped
 
+  adminer:
+    image: adminer:latest
+    container_name: pg_adm
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
   backend:
     build:
       context: ./backend

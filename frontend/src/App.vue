@@ -31,7 +31,13 @@ watch(
       </video>
       <div class="app-video-background__scrim" />
     </div>
-    <div class="app-shell__content"><RouterView /></div>
+    <main class="app-shell__content">
+      <RouterView v-slot="{ Component }">
+        <Transition name="route" mode="out-in">
+          <component :is="Component" />
+        </Transition>
+      </RouterView>
+    </main>
     <TabBar v-if="!$route.meta.hideTabBar" />
   </div>
 </template>

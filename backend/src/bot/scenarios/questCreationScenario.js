@@ -41,6 +41,23 @@ function reviewKeyboard() {
   ]);
 }
 
+function editKeyboard() {
+  return Keyboard.inlineKeyboard([
+    [
+      Keyboard.button.callback('Название', 'quest-draft:edit:title'),
+      Keyboard.button.callback('Предмет', 'quest-draft:edit:subject'),
+    ],
+    [
+      Keyboard.button.callback('Тип', 'quest-draft:edit:type'),
+      Keyboard.button.callback('Срок', 'quest-draft:edit:deadline'),
+    ],
+    [
+      Keyboard.button.callback('Доступ', 'quest-draft:edit:scope'),
+      Keyboard.button.callback('Отмена', 'quest-draft:cancel'),
+    ],
+  ]);
+}
+
 function humanType(type) {
   return {
     homework: 'Домашняя работа',
@@ -57,6 +74,32 @@ function missingField(draft) {
   if (!draft.scope) return 'scope';
   if (!draft.deadline) return 'deadline';
   return null;
+}
+
+async function runWithProgress(ctx, operation) {
+  const message = await ctx.reply('Распознаю задание… 0 с');
+  const messageId = message.body?.mid;
+  let seconds = 0;
+  const interval = setInterval(() => {
+    seconds += 1;
+    if (messageId) {
+      ctx.api.editMessage(messageId, { text: 'Распознаю задание… ' + seconds + ' с' }).catch(() => {});
+    }
+  }, 1000);
+
+  let completed = false;
+  try {
+    const result = await operation();
+    completed = true;
+    return result;
+  } finally {
+    clearInterval(interval);
+    if (messageId) {
+      ctx.api.editMessage(messageId, {
+        text: completed ? 'Черновик готов. Проверяю детали…' : 'Не удалось подготовить черновик.',
+      }).catch(() => {});
+    }
+  }
 }
 
 function draftPreview(draft) {
@@ -133,9 +176,11 @@ export const questCreationScenario = defineScenario()({
       }
 
       await acknowledge(sctx.ctx);
-      await sctx.ctx.reply('Распознаю задание…');
       try {
-        const draft = await extractQuestDraft(sctx.data.originalText);
+        const draft = await runWithProgress(
+          sctx.ctx,
+          () => extractQuestDraft(sctx.data.originalText),
+        );
         return transition.goto('fillMissing', { draft });
       } catch (error) {
         console.error('GigaChat draft error:', error.message);
@@ -190,6 +235,70 @@ export const questCreationScenario = defineScenario()({
       return transition.goto('fillMissing', { draft });
     },
 
+    editChoice: async (sctx) => {
+      const payload = sctx.ctx.update?.callback?.payload;
+      if (payload === 'quest-draft:cancel') {
+        await acknowledge(sctx.ctx);
+        await sctx.ctx.reply('Создание квеста отменено.');
+        return transition.cancel();
+      }
+      const field = payload?.replace('quest-draft:edit:', '');
+      if (!['title', 'subject', 'type', 'deadline', 'scope'].includes(field)) {
+        await sctx.ctx.reply('Выберите поле для изменения.', { attachments: [editKeyboard()] });
+        return transition.stay();
+      }
+      await acknowledge(sctx.ctx);
+      if (field === 'scope') {
+        await sctx.ctx.reply('Кому будет доступен квест?', { attachments: [scopeKeyboard()] });
+      } else {
+        const labels = {
+          title: 'Отправьте новое название квеста.',
+          subject: 'Отправьте новый предмет.',
+          type: 'Отправьте тип: homework, lab, exam_prep или personal.',
+          deadline: 'Отправьте срок в формате «2026-10-15 18:00».',
+        };
+        await sctx.ctx.reply(labels[field]);
+      }
+      return transition.goto('editValue', { draft: sctx.data.draft, field });
+    },
+
+    editValue: async (sctx) => {
+      const draft = { ...sctx.data.draft };
+      const payload = sctx.ctx.update?.callback?.payload;
+      const { field } = sctx.data;
+      const text = getText(sctx.ctx);
+
+      if (field === 'scope') {
+        if (payload === 'quest-draft:scope:personal' || payload === 'quest-draft:scope:group') {
+          await acknowledge(sctx.ctx);
+          draft.scope = payload.endsWith('group') ? 'group' : 'personal';
+          return transition.goto('review', { draft });
+        }
+        await sctx.ctx.reply('Выберите «Только для меня» или «Для группы».', { attachments: [scopeKeyboard()] });
+        return transition.stay();
+      }
+
+      if (!text) return transition.stay();
+      if (field === 'title') draft.title = text.slice(0, 255);
+      if (field === 'subject') draft.subject = text.slice(0, 120);
+      if (field === 'type') {
+        if (!VALID_TYPES.includes(text)) {
+          await sctx.ctx.reply('Используйте один из типов: homework, lab, exam_prep или personal.');
+          return transition.stay();
+        }
+        draft.type = text;
+      }
+      if (field === 'deadline') {
+        const parsedDeadline = new Date(text);
+        if (Number.isNaN(parsedDeadline.getTime())) {
+          await sctx.ctx.reply('Не удалось распознать срок. Используйте формат «2026-10-15 18:00».');
+          return transition.stay();
+        }
+        draft.deadline = parsedDeadline.toISOString();
+      }
+      return transition.goto('review', { draft });
+    },
+
     review: async (sctx) => {
       const payload = sctx.ctx.update?.callback?.payload;
       if (payload === 'quest-draft:cancel') {
@@ -199,9 +308,8 @@ export const questCreationScenario = defineScenario()({
       }
       if (payload === 'quest-draft:edit') {
         await acknowledge(sctx.ctx);
-        const nextDraft = { ...sctx.data.draft, title: null };
-        await sctx.ctx.reply('Отправьте новое название квеста.');
-        return transition.goto('fillMissing', { draft: nextDraft });
+        await sctx.ctx.reply('Что изменить в квесте?', { attachments: [editKeyboard()] });
+        return transition.goto('editChoice', { draft: sctx.data.draft });
       }
       if (payload !== 'quest-draft:create') {
         await sctx.ctx.reply(draftPreview(sctx.data.draft), { attachments: [reviewKeyboard()] });

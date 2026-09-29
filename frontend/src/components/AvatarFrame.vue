@@ -13,9 +13,8 @@ const source = computed(() => {
   const style = new Style(pixelArt);
   const avatar = new Avatar(style, {
     seed: stableSeed,
-    backgroundColor: ['b6e3f4', 'c0aede', 'd1d4f9'],
-    backgroundType: ['solid'],
-    radius: 18,
+    backgroundColor: 'b6e3f4',
+    borderRadius: 18,
     size: 160,
   });
 
