@@ -55,7 +55,7 @@ onMounted(async () => {
         </div>
         <div class="flex gap-2">
           <button type="button" class="grid h-9 w-9 place-items-center rounded-full border border-white/15 bg-[#071a37]/55 text-white" aria-label="Уведомления" @click="router.push({ name: 'notifications' })"><span class="material-symbols-outlined text-[20px]" aria-hidden="true">notifications</span></button>
-          <button type="button" class="grid h-9 w-9 place-items-center rounded-full border border-white/15 bg-[#071a37]/55 text-white" :aria-label="t('nav.profile')" @click="router.push({ name: 'profile' })"><span class="material-symbols-outlined text-[20px]" aria-hidden="true">settings</span></button>
+          <button type="button" class="grid h-9 w-9 place-items-center rounded-full border border-white/15 bg-[#071a37]/55 text-white" :aria-label="t('settings.title')" @click="router.push({ name: 'settings' })"><span class="material-symbols-outlined text-[20px]" aria-hidden="true">settings</span></button>
         </div>
       </header>
 

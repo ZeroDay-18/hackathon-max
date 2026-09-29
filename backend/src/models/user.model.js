@@ -72,6 +72,12 @@ const UserModel = (sequelize, DataTypes) => {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     });
+    User.hasMany(models.emotionEntries, {
+      foreignKey: 'userId',
+      as: 'emotionEntries',
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    });
   };
 
   return User;
