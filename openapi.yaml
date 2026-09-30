@@ -1,0 +1,351 @@
+openapi: 3.1.0
+info:
+  title: StudyQuest API
+  version: 1.0.0
+  description: API для Mini App StudyQuest в MAX.
+servers:
+  - url: https://studyquest.example.invalid
+paths:
+  /health:
+    get:
+      summary: Проверка доступности API
+      responses:
+        '200':
+          description: API доступен
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status:
+                    type: string
+                    example: ok
+  /api/auth/max-miniapp:
+    post:
+      summary: Аутентификация пользователя MAX Mini App
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [initData]
+              properties:
+                initData:
+                  type: string
+                  description: Подписанные initData от MAX; не хранить в репозитории.
+      responses:
+        '200':
+          description: Аутентификация успешна
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+  /api/quests:
+    post:
+      summary: Создание задания
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title]
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                  nullable: true
+                subject:
+                  type: string
+                  nullable: true
+                type:
+                  type: string
+                  enum: [homework, lab, exam_prep, poll, personal]
+                deadline:
+                  type: string
+                  format: date-time
+                  nullable: true
+                scope:
+                  type: string
+                  enum: [group, personal]
+      responses:
+        '201':
+          description: Задание создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestResponse'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+  /api/quests/{id}:
+    get:
+      summary: Получение доступного пользователю задания
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/QuestId'
+      responses:
+        '200':
+          description: Задание найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestResponse'
+        '401':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+    delete:
+      summary: Удаление собственного задания
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/QuestId'
+      responses:
+        '200':
+          description: Задание удалено
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [success]
+                properties:
+                  success:
+                    type: boolean
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+  /api/emotion-diary:
+    get:
+      summary: Список личных записей дневника эмоций
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Личные записи пользователя
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [success, entries, hasMore]
+                properties:
+                  success:
+                    type: boolean
+                  entries:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EmotionEntry'
+                  hasMore:
+                    type: boolean
+        '401':
+          $ref: '#/components/responses/Error'
+    post:
+      summary: Создание личной записи дневника эмоций
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/MeasurementEntryInput'
+                - $ref: '#/components/schemas/ThermometerEntryInput'
+      responses:
+        '201':
+          description: Запись создана
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [success, entry]
+                properties:
+                  success:
+                    type: boolean
+                  entry:
+                    $ref: '#/components/schemas/EmotionEntry'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+  /api/emotion-diary/{id}:
+    delete:
+      summary: Удаление собственной записи дневника
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/EmotionEntryId'
+      responses:
+        '200':
+          description: Запись удалена
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [success]
+                properties:
+                  success:
+                    type: boolean
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    QuestId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+    EmotionEntryId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+  responses:
+    Error:
+      description: Ошибка запроса
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      required: [success, message]
+      properties:
+        success:
+          type: boolean
+          const: false
+        code:
+          type: string
+        message:
+          type: string
+    AuthResponse:
+      type: object
+      required: [success, token, expiresIn, user, progression]
+      properties:
+        success:
+          type: boolean
+          const: true
+        token:
+          type: string
+        expiresIn:
+          type: integer
+        user:
+          type: object
+        progression:
+          type: object
+    QuestResponse:
+      type: object
+      required: [success, quest]
+      properties:
+        success:
+          type: boolean
+          const: true
+        quest:
+          $ref: '#/components/schemas/Quest'
+    Quest:
+      type: object
+      required: [id, title, type, progress]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        type:
+          type: string
+        progress:
+          type: object
+    EmotionEntry:
+      type: object
+      required: [id, entryMethod, valence, energy, quadrant, trigger, occurredAt]
+      properties:
+        id:
+          type: integer
+        entryMethod:
+          type: string
+          enum: [thermometer, measurement]
+        basicEmotionCode:
+          type: [string, 'null']
+        emotionCode:
+          type: [string, 'null']
+        intensity:
+          type: [integer, 'null']
+        valence:
+          type: integer
+        energy:
+          type: integer
+        quadrant:
+          type: string
+          enum: [blue, green, red, yellow]
+        trigger:
+          type: string
+        occurredAt:
+          type: string
+          format: date-time
+    MeasurementEntryInput:
+      type: object
+      required: [entryMethod, valence, energy, trigger, occurredAt]
+      properties:
+        entryMethod:
+          const: measurement
+        valence:
+          type: integer
+          minimum: -5
+          maximum: 5
+          not:
+            const: 0
+        energy:
+          type: integer
+          minimum: 1
+          maximum: 10
+        trigger:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        occurredAt:
+          type: string
+          format: date-time
+    ThermometerEntryInput:
+      type: object
+      required: [entryMethod, basicEmotionCode, emotionCode, trigger, occurredAt]
+      properties:
+        entryMethod:
+          const: thermometer
+        basicEmotionCode:
+          type: string
+        emotionCode:
+          type: string
+        trigger:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        occurredAt:
+          type: string
+          format: date-time

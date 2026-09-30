@@ -43,6 +43,9 @@ app.use('/api/quests', questRoutes)
 app.use('/api/polls', pollRoutes)
 app.use('/api/notifications', notificationRoutes)
 app.use('/api/emotion-diary', emotionDiaryRoutes)
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });

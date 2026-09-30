@@ -1,0 +1,157 @@
+# DATA-API 1.0. Secrets and real MAX initData are intentionally not stored here.
+schemaVersion: "1.0"
+
+solution:
+  name: "StudyQuest"
+  teamId: "hackathon-max"
+
+api:
+  baseUrl: "https://hm.zerodayteam.space/api"
+  openapi: "./openapi.yaml"
+  defaultHeaders:
+    Accept: "application/json"
+
+checks:
+  - id: "health"
+    name: "Доступность API"
+    description: "Публичная проверка доступности развернутого сервиса."
+    method: "GET"
+    path: "/health"
+    role: "public"
+    expected:
+      statusCodes: [200]
+      contentType: "application/json"
+      requiredFields: ["status"]
+    timeoutMs: 5000
+    repeatable: true
+
+  - id: "authenticate-student"
+    name: "Аутентификация тестового студента MAX"
+    description: "Проверяющая сторона передаёт подписанные MAX initData тестового пользователя защищённым каналом."
+    method: "POST"
+    path: "/api/auth/max-miniapp"
+    role: "student"
+    request:
+      headers:
+        Content-Type: "application/json"
+      body:
+        initData: "${studentInitData}"
+    expected:
+      statusCodes: [200]
+      contentType: "application/json"
+      requiredFields: ["success", "token", "user", "progression"]
+    timeoutMs: 5000
+    repeatable: true
+    extract:
+      accessToken: "$.token"
+
+  - id: "create-personal-quest"
+    name: "Создание временного личного задания"
+    description: "Проверка основного сценария создания задания без изменения данных группы."
+    method: "POST"
+    path: "/api/quests"
+    role: "student"
+    dependsOn: ["authenticate-student"]
+    request:
+      headers:
+        Authorization: "Bearer ${accessToken}"
+        Content-Type: "application/json"
+      body:
+        title: "DATA-API temporary personal quest"
+        description: "Temporary object created during automated validation"
+        type: "personal"
+        scope: "personal"
+    expected:
+      statusCodes: [201]
+      contentType: "application/json"
+      requiredFields: ["success", "quest"]
+    timeoutMs: 5000
+    repeatable: false
+    extract:
+      questId: "$.quest.id"
+
+  - id: "read-personal-quest"
+    name: "Чтение созданного личного задания"
+    method: "GET"
+    path: "/api/quests/{id}"
+    role: "student"
+    dependsOn: ["create-personal-quest"]
+    request:
+      path:
+        id: "${questId}"
+      headers:
+        Authorization: "Bearer ${accessToken}"
+    expected:
+      statusCodes: [200]
+      contentType: "application/json"
+      requiredFields: ["success", "quest"]
+    timeoutMs: 5000
+    repeatable: true
+
+  - id: "create-emotion-entry"
+    name: "Создание временной записи дневника эмоций"
+    method: "POST"
+    path: "/api/emotion-diary"
+    role: "student"
+    dependsOn: ["authenticate-student"]
+    request:
+      headers:
+        Authorization: "Bearer ${accessToken}"
+        Content-Type: "application/json"
+      body:
+        entryMethod: "measurement"
+        valence: 3
+        energy: 6
+        trigger: "Temporary object created during automated validation"
+        occurredAt: "2025-01-01T12:00:00.000Z"
+    expected:
+      statusCodes: [201]
+      contentType: "application/json"
+      requiredFields: ["success", "entry"]
+    timeoutMs: 5000
+    repeatable: false
+    extract:
+      emotionEntryId: "$.entry.id"
+
+  - id: "list-emotion-entries"
+    name: "Чтение личной истории эмоций"
+    method: "GET"
+    path: "/api/emotion-diary"
+    role: "student"
+    dependsOn: ["create-emotion-entry"]
+    request:
+      headers:
+        Authorization: "Bearer ${accessToken}"
+    expected:
+      statusCodes: [200]
+      contentType: "application/json"
+      requiredFields: ["success", "entries", "hasMore"]
+    timeoutMs: 5000
+    repeatable: true
+
+cleanup:
+  - id: "delete-personal-quest"
+    method: "DELETE"
+    path: "/api/quests/{id}"
+    role: "student"
+    request:
+      path:
+        id: "${questId}"
+      headers:
+        Authorization: "Bearer ${accessToken}"
+    expected:
+      statusCodes: [200, 404]
+    timeoutMs: 5000
+
+  - id: "delete-emotion-entry"
+    method: "DELETE"
+    path: "/api/emotion-diary/{id}"
+    role: "student"
+    request:
+      path:
+        id: "${emotionEntryId}"
+      headers:
+        Authorization: "Bearer ${accessToken}"
+    expected:
+      statusCodes: [200, 404]
+    timeoutMs: 5000
