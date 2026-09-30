@@ -102,6 +102,29 @@ async function runWithProgress(ctx, operation) {
   }
 }
 
+async function advanceDraft(ctx, draft) {
+  const field = missingField(draft);
+
+  if (!field) {
+    await ctx.reply(draftPreview(draft), { attachments: [reviewKeyboard()] });
+    return 'review';
+  }
+
+  if (field === 'scope') {
+    await ctx.reply('Кому будет доступен квест?', { attachments: [scopeKeyboard()] });
+    return 'fillMissing';
+  }
+
+  const questions = {
+    title: 'Как назвать квест?',
+    subject: 'По какому предмету это задание?',
+    type: 'Выберите тип: homework, lab, exam_prep или personal.',
+    deadline: 'Укажите срок в формате «2026-10-15 18:00».',
+  };
+  await ctx.reply(questions[field]);
+  return 'fillMissing';
+}
+
 function draftPreview(draft) {
   return [
     'Проверьте черновик:',
@@ -181,7 +204,7 @@ export const questCreationScenario = defineScenario()({
           sctx.ctx,
           () => extractQuestDraft(sctx.data.originalText),
         );
-        return transition.goto('fillMissing', { draft });
+        return transition.goto(await advanceDraft(sctx.ctx, draft), { draft });
       } catch (error) {
         console.error('GigaChat draft error:', error.message);
         await sctx.ctx.reply('Не удалось подготовить черновик. Попробуйте позже или отправьте текст заново.');
@@ -194,28 +217,19 @@ export const questCreationScenario = defineScenario()({
       const payload = sctx.ctx.update?.callback?.payload;
       const field = missingField(draft);
 
-      if (!field) return transition.goto('review', { draft });
+      if (!field) return transition.goto(await advanceDraft(sctx.ctx, draft), { draft });
       if (field === 'scope') {
         if (payload === 'quest-draft:scope:personal' || payload === 'quest-draft:scope:group') {
           await acknowledge(sctx.ctx);
           draft.scope = payload.endsWith('group') ? 'group' : 'personal';
-          return transition.goto('fillMissing', { draft });
+          return transition.goto(await advanceDraft(sctx.ctx, draft), { draft });
         }
         await sctx.ctx.reply('Кому будет доступен квест?', { attachments: [scopeKeyboard()] });
         return transition.stay();
       }
 
       const text = getText(sctx.ctx);
-      if (!text) {
-        const questions = {
-          title: 'Как назвать квест?',
-          subject: 'По какому предмету это задание?',
-          type: 'Выберите тип: homework, lab, exam_prep или personal.',
-          deadline: 'Укажите срок в формате «2026-10-15 18:00».',
-        };
-        await sctx.ctx.reply(questions[field]);
-        return transition.stay();
-      }
+      if (!text) return transition.stay();
 
       if (field === 'title') draft.title = text.slice(0, 255);
       if (field === 'subject') draft.subject = text.slice(0, 120);
@@ -232,7 +246,7 @@ export const questCreationScenario = defineScenario()({
         await sctx.ctx.reply('Используйте один из типов: homework, lab, exam_prep или personal.');
         return transition.stay();
       }
-      return transition.goto('fillMissing', { draft });
+      return transition.goto(await advanceDraft(sctx.ctx, draft), { draft });
     },
 
     editChoice: async (sctx) => {
@@ -272,7 +286,7 @@ export const questCreationScenario = defineScenario()({
         if (payload === 'quest-draft:scope:personal' || payload === 'quest-draft:scope:group') {
           await acknowledge(sctx.ctx);
           draft.scope = payload.endsWith('group') ? 'group' : 'personal';
-          return transition.goto('review', { draft });
+          return transition.goto(await advanceDraft(sctx.ctx, draft), { draft });
         }
         await sctx.ctx.reply('Выберите «Только для меня» или «Для группы».', { attachments: [scopeKeyboard()] });
         return transition.stay();
@@ -296,7 +310,7 @@ export const questCreationScenario = defineScenario()({
         }
         draft.deadline = parsedDeadline.toISOString();
       }
-      return transition.goto('review', { draft });
+      return transition.goto(await advanceDraft(sctx.ctx, draft), { draft });
     },
 
     review: async (sctx) => {
